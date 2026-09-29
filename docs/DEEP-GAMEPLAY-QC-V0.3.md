@@ -73,3 +73,14 @@ These cannot be settled by source-level correctness alone:
 
 Engine correctness: **GO after fixes, pending CI/device regression.**  
 Gameplay feel / retention: **NOT FROZEN** until real-device playtest.
+
+
+## Adversarial Execution Result
+
+PR #2 now uses a shared gameplay core (`js/core.js`) consumed by both browser runtime and Node adversarial tests, preventing test/runtime semantic drift.
+
+GitHub Actions Smoke Gate run #17: **PASS**.
+
+Executed cases include overlapping multi-pair, simultaneous pairs, deterministic chain ×2/×3, gravity order, Fair-Bag permutation/boundary, restart token invalidation, level-transition invalidation and center-spawn top-out.
+
+During gate construction, an invalid chain fixture and a serialization syntax defect were both caught and corrected before merge. This confirms the gate is capable of failing closed rather than merely documenting intended behavior.
