@@ -231,3 +231,13 @@ Three gameplay-friction changes implemented on `friction-audit-v0.3` without cos
 3. Flow: Levels 1–4 use a short non-blocking clear transition (~900 ms); blocking modal remains only for Game Over and Chapter Clear.
 
 Status: **pending CI + real-device regression before merge/freeze.**
+
+
+## Experimental Branch — Engagement Gimmick v0.4
+
+Stable baseline remains v0.3 on `main`. Branch `engagement-gimmick-v0.4` tests three skill-derived gimmicks without changing core Make-10 semantics:
+- TEN FUSION feedback on successful match waves.
+- CHAIN ×3 activates bounded FEVER 10 for the next 3 locked drops with ×2 score only.
+- LAST DROP gives one 1.4-second player-controlled clutch entry opportunity when the selected top entry is blocked but another column remains open.
+
+No RNG rescue, booster, blocker, wildcard, ad, or permanent meta-system is added. v0.4 must beat v0.3 in real-device feel before any merge decision.
