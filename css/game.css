@@ -15,3 +15,11 @@ header{height:58px;display:flex;align-items:center;justify-content:space-between
 /* v0.3.1 preview containment hard-fix: preview pieces must never inherit board absolute layout */
 .preview>div{position:relative!important;display:grid!important;place-items:center!important;width:34px!important;height:34px!important;flex:0 0 34px!important;overflow:visible}
 .preview .blob.mini{position:relative!important;inset:unset!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;display:flex!important;width:32px!important;height:32px!important;margin:0!important;transform:none;font-size:18px}
+
+/* v0.4 engagement gimmick feedback — mechanics-first, no visual redesign */
+.stage.fusion-hit .board{animation:fusionPulse .28s ease-out}
+.stage.fever-hit .board{animation:feverPulse .55s ease-out}
+.stage.last-drop .board{animation:lastDropPulse .55s ease-in-out infinite alternate}
+@keyframes fusionPulse{50%{transform:scale(1.012);filter:brightness(1.18)}}
+@keyframes feverPulse{35%{transform:scale(1.018);filter:brightness(1.32) saturate(1.35)}}
+@keyframes lastDropPulse{to{filter:brightness(1.16);box-shadow:inset 0 0 35px #0005,0 0 28px #ff625f55,0 20px 45px #0005}}
