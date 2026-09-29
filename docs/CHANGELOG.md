@@ -19,3 +19,9 @@
 - Five-level micro-progression chapter.
 - Flow-Protected Monetization principles.
 - Real ads explicitly deferred until after gameplay validation.
+
+### 2026-09-30 — Post-deployment smoke QC
+- Confirmed live GitHub Pages render on a real device.
+- Fixed P1 preview Numberling escaping NOW/NEXT slots.
+- Added small tablet/landscape viewport polish.
+- Visual freeze remains pending post-patch device confirmation.
