@@ -46,4 +46,4 @@ function shuffledBag(random=Math.random){
 
 function canSpawn(board,col=Math.floor(board[0].length/2)){return board[0][col]===0}
 
-if(typeof module!=="undefined")module.exports={makeBoard,matchWave,gravity,resolveBoard,shuffledBag,canSpawn};
+const api={makeBoard,matchWave,gravity,resolveBoard,shuffledBag,canSpawn};\nif(typeof module!=="undefined")module.exports=api;\nif(typeof window!=="undefined")window.TenDropCore=api;
