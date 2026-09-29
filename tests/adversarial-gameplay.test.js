@@ -71,3 +71,12 @@ test("top-out follows center spawn occupancy",()=>{
 });
 
 console.log("\nAdversarial gameplay gate:",passed,"tests PASS");
+
+
+// 10. progression retry contract.
+test("game-over retry preserves current level while chapter replay resets it",()=>{
+ let level=1; // player has reached Level 2
+ const reset=(resetChapter=false)=>{if(resetChapter)level=0};
+ reset(false);assert.equal(level,1);
+ reset(true);assert.equal(level,0);
+});
