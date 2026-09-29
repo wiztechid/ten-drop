@@ -15,6 +15,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: JavaScript syntax
         run: node --check js/game.js
+      - name: Adversarial gameplay engine
+        run: |
+          node --check js/core.js
+          node --check tests/adversarial-gameplay.test.js
+          node tests/adversarial-gameplay.test.js
       - name: Static entrypoint
         run: |
           test -s index.html
