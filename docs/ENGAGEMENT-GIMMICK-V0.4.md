@@ -98,3 +98,34 @@ Findings closed:
 - FEVER refresh remains capped at 3 drops and is never additive.
 
 Status: patched; new CI must pass before preview deployment.
+
+
+## A/B Real-Device Protocol
+
+Compare the stable v0.3 build first, then the exact v0.4 experimental build. Do not change rules or tuning between sessions.
+
+Run each build for at least three Game Overs or one complete chapter, whichever takes longer.
+
+Record each item independently as KEEP / TUNE / KILL:
+
+1. **TEN FUSION**
+   - Is Make-10 more satisfying than v0.3?
+   - Is the board state still immediately understandable after a match?
+   - Does the feedback become repetitive?
+
+2. **CHAIN FEVER**
+   - Did the player intentionally try to reach CHAIN ×3?
+   - Is it obvious that FEVER lasts three locked drops?
+   - Does ×2 score feel meaningful without feeling like an unrelated bonus?
+
+3. **LAST DROP**
+   - Is the danger state immediately understood?
+   - Does moving to safety feel like a clutch save rather than a free rescue?
+   - Is 1.4 seconds fair on a real touch device?
+
+4. **Overall replay urge**
+   - After Game Over, which build creates the stronger immediate desire to retry?
+   - If v0.4 is more exciting but less readable, do not automatically KEEP it; tune the offending gimmick.
+
+### Freeze rule
+v0.4 is not eligible to replace v0.3 merely because CI passes. At least one signature gimmick must clearly improve felt engagement without damaging Make-10 readability or perceived fairness.
