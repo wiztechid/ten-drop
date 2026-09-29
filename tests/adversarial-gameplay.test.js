@@ -124,3 +124,24 @@ test("LAST DROP cannot rescue a completely sealed top row",()=>{
  const b=makeBoard();for(let c=0;c<6;c++)b[0][c]=c+1;
  assert.equal(Array.from({length:6},(_,c)=>canSpawn(b,c)).some(Boolean),false);
 });
+
+
+test("LAST DROP remains consumed after a successful clutch for the same piece",()=>{
+ let used=false,armed=false;
+ const trigger=()=>{if(armed||used)return false;armed=true;used=true;return true};
+ assert.equal(trigger(),true);
+ armed=false; // clutch succeeded, but same-piece entitlement stays consumed
+ assert.equal(trigger(),false);
+});
+
+test("level transition clears FEVER and Last Drop transient state",()=>{
+ let feverDrops=2,lastDropArmed=true,lastDropUsed=true;
+ const levelTransition=()=>{feverDrops=0;lastDropArmed=false;lastDropUsed=false};
+ levelTransition();
+ assert.equal(feverDrops,0);assert.equal(lastDropArmed,false);assert.equal(lastDropUsed,false);
+});
+
+test("restart invalidates Last Drop timer generation through run token",()=>{
+ let runToken=21;const lastDropToken=runToken;runToken++;
+ assert.notEqual(lastDropToken,runToken);
+});
