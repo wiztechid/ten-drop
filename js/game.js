@@ -11,7 +11,7 @@ const levels=[
 let board,active,queue=[],score=0,best=+localStorage.getItem("tenDropBest")||0,level=0,progress=0,levelScoreStart=0,timer=null,fallMs=850,locked=false,bag=[],levelClearPending=false,levelTimer=null,runToken=0;
 const $=s=>document.querySelector(s),boardEl=$("#board"),scoreEl=$("#score"),bestEl=$("#best"),callout=$("#callout");
 function makeBoard(){return Array.from({length:ROWS},()=>Array(COLS).fill(EMPTY))}
-function refillBag(){bag=[];for(let r=0;r<2;r++)for(let n=1;n<=9;n++)bag.push(n);for(let i=bag.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]]}}
+function refillBag(){bag=[];for(let n=1;n<=9;n++)bag.push(n);for(let i=bag.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]]}}
 function draw(){if(!bag.length)refillBag();return bag.pop()}
 function ensureQueue(){while(queue.length<3)queue.push(draw())}
 function spawn(){ensureQueue();active={n:queue.shift(),r:0,c:Math.floor(COLS/2)};ensureQueue();if(board[0][active.c])return gameOver();render();schedule()}
