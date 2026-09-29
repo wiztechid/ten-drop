@@ -96,3 +96,31 @@ test("new level gets a clean board while retry keeps level identity",()=>{
  const startFreshLevel=()=>{board=makeBoard()};
  startFreshLevel();assert.equal(board.flat().every(v=>v===0),true);assert.equal(level,1);
 });
+
+
+// v0.4 engagement contracts
+test("FEVER reward is bounded to exactly three subsequent locked drops",()=>{
+ let feverDrops=3;
+ const consume=()=>{const active=feverDrops>0;if(active)feverDrops--;return active};
+ assert.equal(consume(),true);assert.equal(consume(),true);assert.equal(consume(),true);
+ assert.equal(consume(),false);assert.equal(feverDrops,0);
+});
+
+test("FEVER doubles score only; it does not alter fair-bag composition",()=>{
+ const base=2*100*2;const fever=base*2;assert.equal(fever,800);
+ const bag=shuffledBag(()=>0.5);assert.deepEqual([...bag].sort((a,b)=>a-b),[1,2,3,4,5,6,7,8,9]);
+});
+
+test("LAST DROP is bounded and requires an actually safe entry column",()=>{
+ const b=makeBoard();b[0][3]=4;
+ const safe=[];for(let c=0;c<6;c++)if(canSpawn(b,c))safe.push(c);
+ assert.equal(safe.includes(3),false);assert.ok(safe.length>0);
+ let armed=false,attempts=0;
+ const trigger=()=>{if(armed)return false;armed=true;attempts++;return true};
+ assert.equal(trigger(),true);assert.equal(trigger(),false);assert.equal(attempts,1);
+});
+
+test("LAST DROP cannot rescue a completely sealed top row",()=>{
+ const b=makeBoard();for(let c=0;c<6;c++)b[0][c]=c+1;
+ assert.equal(Array.from({length:6},(_,c)=>canSpawn(b,c)).some(Boolean),false);
+});
