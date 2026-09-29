@@ -25,3 +25,8 @@
 - Fixed P1 preview Numberling escaping NOW/NEXT slots.
 - Added small tablet/landscape viewport polish.
 - Visual freeze remains pending post-patch device confirmation.
+
+### 2026-09-30 — Preview containment hotfix v0.3.1
+- Real-device recheck showed the preview escape persisted.
+- Added explicit high-specificity preview containment independent from board absolute positioning.
+- Cache-busted CSS and JS references in the live entrypoint to prevent stale mobile assets.
