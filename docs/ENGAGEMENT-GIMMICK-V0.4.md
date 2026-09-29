@@ -81,3 +81,20 @@ LAST DROP board pulse could survive after clutch/timeout. Pulse state now has de
 A FEVER-active drop may itself earn CHAIN ×3. This refreshes the bounded counter to 3 via Math.max(feverDrops, 3); it never stacks beyond 3. The score multiplier applies to the full cascade produced by a FEVER-active locked drop.
 
 Status: implementation patched; CI rerun required.
+
+
+## Deep Gimmick QC — Pass 2
+
+Hostile state-machine audit covered input spam during LAST DROP, restart during countdown, duplicate Game Over signals, FEVER plus level completion in the same cascade, overlapping multi-pair Fusion semantics, and stale async resolution.
+
+Findings closed:
+- P0/CI: literal escaped newline introduced by the previous patch caused JavaScript syntax failure; Smoke Gate #27 correctly failed closed. Source serialization corrected.
+- P1: repeated hard-drop during an armed LAST DROP could turn a harmless double-tap into immediate Game Over. Armed-state calls are now idempotent/no-op.
+- P1: LAST DROP timeout now captures runToken, so restart invalidates the old countdown before it can mutate the new run.
+- P1: duplicate terminal signals are guarded by gameOverShown; Game Over modal is idempotent per active piece/run state.
+- FEVER earned by a level-finishing cascade is cleared by level transition and cannot leak into the next clean level.
+- Multi-pair Fusion remains presentation-only: pair-edge count drives Tens/score while unique cells drive clears.
+- Stale async resolve cannot award score/FEVER after runToken changes.
+- FEVER refresh remains capped at 3 drops and is never additive.
+
+Status: patched; new CI must pass before preview deployment.
