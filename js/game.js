@@ -1,5 +1,6 @@
 (()=>{"use strict";
-const COLS=6,ROWS=9,EMPTY=0;\nconst Core=window.TenDropCore;
+const COLS=6,ROWS=9,EMPTY=0;
+const Core=window.TenDropCore;
 const colors=n=>"n"+n;
 const levels=[
  {type:"tens",target:5,label:"Make 5 Tens"},
@@ -21,7 +22,9 @@ function step(){if(locked)return;if(can(active.r+1,active.c)){active.r++;render(
 function move(dx){if(locked||!active)return;if(can(active.r,active.c+dx)){active.c+=dx;render()}}
 function hardDrop(){if(locked||!active)return;while(can(active.r+1,active.c))active.r++;lock()}
 async function lock(){clearTimeout(timer);locked=true;const token=runToken;board[active.r][active.c]=active.n;active=null;render();await resolve(token);if(token!==runToken)return;locked=false;if(level<levels.length&&!levelClearPending)spawn()}
-function matchWave(){return Core.matchWave(board)}\nfunction gravity(){Core.gravity(board)}\nconst sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function matchWave(){return Core.matchWave(board)}
+function gravity(){Core.gravity(board)}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function resolve(token){let chain=0,totalCleared=0,totalTens=0;while(true){if(token!==runToken)return;let wave=matchWave(),m=wave.cells;if(!m.length)break;chain++;totalCleared+=m.length;totalTens+=wave.pairs.length;show(chain>=5?"FEVER 10!":chain>=3?"TEN-TASTIC!":"10! ×"+chain);m.forEach(([r,c])=>{let el=boardEl.children[r*COLS+c]?.querySelector(".blob");if(el)el.classList.add("pop")});await sleep(210);if(token!==runToken)return;m.forEach(([r,c])=>board[r][c]=0);score+=wave.pairs.length*100*chain;gravity();render();await sleep(160)}
 if(token!==runToken)return;if(chain>=4)show("PERFECT TEN!");updateObjective(totalTens,totalCleared,chain);scoreEl.textContent=score;if(score>best){best=score;localStorage.setItem("tenDropBest",best);bestEl.textContent=best}}
 function updateObjective(tens,clears,chain){let l=levels[level];if(!l)return;if(l.type==="tens")progress+=tens;if(l.type==="clears")progress+=clears;if(l.type==="score")progress=score-levelScoreStart;if(l.type==="chain")progress=Math.max(progress,chain);updateHud();if(progress>=l.target&&!levelClearPending){levelClearPending=true;const token=runToken;levelTimer=setTimeout(()=>{if(token===runToken)levelClear()},420)}}
