@@ -176,7 +176,7 @@ Implemented:
 - Dependency-free HTML/CSS/JS playable vertical slice.
 - Mobile buttons + swipe controls + keyboard fallback.
 - 6×9 live-drop board, Make-10 resolution, gravity and cascades.
-- Two-copy shuffled 1–9 Fair-Bag prototype.
+- Shuffled one-copy 1–9 Fair-Bag prototype.
 - Immutable NOW + NEXT + NEXT queue.
 - CSS jelly Numberling placeholders with approved number colors.
 - TEN-TASTIC, FEVER 10 and PERFECT TEN feedback states.
@@ -202,3 +202,22 @@ Observed working: page render, 6×9 board, active falling Numberling, score/best
 P1 found and patched: NOW/NEXT mini Numberling inherited absolute board positioning and escaped the preview container to the upper-left viewport. Preview slots now establish their own positioning context and mini Numberlings use relative positioning. Tablet/landscape viewport received a small responsive-height polish.
 
 Status: **LIVE — post-patch device recheck required before v0.3 visual freeze.**
+
+
+## Deep Gameplay QC — 2026-09-30
+
+Engine audit found and fixed three correctness/fairness defects on `deep-gameplay-qc-v0.3`:
+- P0 stale async cascade/level work could corrupt a restarted run; fixed with run-token isolation and cancellable level transition timer.
+- P1 multi-pair Make-10 semantics undercounted overlapping valid pairs; engine now separates valid pair edges from unique cleared cells.
+- P1 two-copy 18-bag allowed excessive cross-boundary drought; changed to shuffled one-copy 1–9 bag without board-aware rescue RNG.
+
+Scoring contract: `valid pairs × 100 × cascade wave`.
+
+Engine correctness is **GO pending CI/device regression**. Gameplay feel/retention remains **NOT FROZEN** until real-device playtest.
+
+
+### Adversarial Gameplay Gate
+
+Executable adversarial CI added to PR #2 and bound to the same shared `js/core.js` used by the live browser game. Covered: overlapping `9-1-9`, simultaneous pairs, deterministic chain ×2 and ×3, gravity ordering, Fair-Bag permutation/boundary, restart-during-cascade token invalidation, stale level-clear invalidation, and center-spawn top-out semantics.
+
+GitHub Actions `TEN DROP Smoke Gate` run #17: **PASS** on syntax, adversarial engine tests, static entrypoint and core invariants.
