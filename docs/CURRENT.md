@@ -214,3 +214,10 @@ Engine audit found and fixed three correctness/fairness defects on `deep-gamepla
 Scoring contract: `valid pairs × 100 × cascade wave`.
 
 Engine correctness is **GO pending CI/device regression**. Gameplay feel/retention remains **NOT FROZEN** until real-device playtest.
+
+
+### Adversarial Gameplay Gate
+
+Executable adversarial CI added to PR #2 and bound to the same shared `js/core.js` used by the live browser game. Covered: overlapping `9-1-9`, simultaneous pairs, deterministic chain ×2 and ×3, gravity ordering, Fair-Bag permutation/boundary, restart-during-cascade token invalidation, stale level-clear invalidation, and center-spawn top-out semantics.
+
+GitHub Actions `TEN DROP Smoke Gate` run #17: **PASS** on syntax, adversarial engine tests, static entrypoint and core invariants.
