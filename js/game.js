@@ -15,12 +15,12 @@ function makeBoard(){return Array.from({length:ROWS},()=>Array(COLS).fill(EMPTY)
 function refillBag(){bag=Core.shuffledBag()}
 function draw(){if(!bag.length)refillBag();return bag.pop()}
 function ensureQueue(){while(queue.length<3)queue.push(draw())}
-function spawn(){ensureQueue();active={n:queue.shift(),r:0,c:Math.floor(COLS/2)};ensureQueue();if(!Core.canSpawn(board,active.c))return gameOver();render();schedule()}
+function spawn(){ensureQueue();active={n:queue.shift(),r:-1,c:Math.floor(COLS/2)};ensureQueue();render();schedule()}
 function schedule(){clearTimeout(timer);timer=setTimeout(step,fallMs)}
 function can(r,c){return r>=0&&r<ROWS&&c>=0&&c<COLS&&!board[r][c]}
-function step(){if(locked)return;if(can(active.r+1,active.c)){active.r++;render();schedule()}else lock()}
-function move(dx){if(locked||!active)return;if(can(active.r,active.c+dx)){active.c+=dx;render()}}
-function hardDrop(){if(locked||!active)return;while(can(active.r+1,active.c))active.r++;lock()}
+function step(){if(locked)return;if(can(active.r+1,active.c)){active.r++;render();schedule()}else if(active.r<0)gameOver();else lock()}
+function move(dx){if(locked||!active)return;let nc=active.c+dx;if(nc<0||nc>=COLS)return;if(active.r<0||can(active.r,nc)){active.c=nc;render()}}
+function hardDrop(){if(locked||!active)return;while(can(active.r+1,active.c))active.r++;if(active.r<0)return gameOver();lock()}
 async function lock(){clearTimeout(timer);locked=true;const token=runToken;board[active.r][active.c]=active.n;active=null;render();await resolve(token);if(token!==runToken)return;locked=false;if(level<levels.length&&!levelClearPending)spawn()}
 function matchWave(){return Core.matchWave(board)}
 function gravity(){Core.gravity(board)}
