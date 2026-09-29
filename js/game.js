@@ -15,12 +15,12 @@ function makeBoard(){return Array.from({length:ROWS},()=>Array(COLS).fill(EMPTY)
 function refillBag(){bag=Core.shuffledBag()}
 function draw(){if(!bag.length)refillBag();return bag.pop()}
 function ensureQueue(){while(queue.length<3)queue.push(draw())}
-function spawn(){ensureQueue();active={n:queue.shift(),r:0,c:Math.floor(COLS/2)};ensureQueue();if(!Core.canSpawn(board,active.c))return gameOver();render();schedule()}
+function spawn(){ensureQueue();active={n:queue.shift(),r:-1,c:Math.floor(COLS/2)};ensureQueue();render();schedule()}
 function schedule(){clearTimeout(timer);timer=setTimeout(step,fallMs)}
 function can(r,c){return r>=0&&r<ROWS&&c>=0&&c<COLS&&!board[r][c]}
-function step(){if(locked)return;if(can(active.r+1,active.c)){active.r++;render();schedule()}else lock()}
-function move(dx){if(locked||!active)return;if(can(active.r,active.c+dx)){active.c+=dx;render()}}
-function hardDrop(){if(locked||!active)return;while(can(active.r+1,active.c))active.r++;lock()}
+function step(){if(locked)return;if(can(active.r+1,active.c)){active.r++;render();schedule()}else if(active.r<0)gameOver();else lock()}
+function move(dx){if(locked||!active)return;let nc=active.c+dx;if(nc<0||nc>=COLS)return;if(active.r<0||can(active.r,nc)){active.c=nc;render()}}
+function hardDrop(){if(locked||!active)return;while(can(active.r+1,active.c))active.r++;if(active.r<0)return gameOver();lock()}
 async function lock(){clearTimeout(timer);locked=true;const token=runToken;board[active.r][active.c]=active.n;active=null;render();await resolve(token);if(token!==runToken)return;locked=false;if(level<levels.length&&!levelClearPending)spawn()}
 function matchWave(){return Core.matchWave(board)}
 function gravity(){Core.gravity(board)}
@@ -28,7 +28,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function resolve(token){let chain=0,totalCleared=0,totalTens=0;while(true){if(token!==runToken)return;let wave=matchWave(),m=wave.cells;if(!m.length)break;chain++;totalCleared+=m.length;totalTens+=wave.pairs.length;show(chain>=5?"FEVER 10!":chain>=3?"TEN-TASTIC!":"10! ×"+chain);m.forEach(([r,c])=>{let el=boardEl.children[r*COLS+c]?.querySelector(".blob");if(el)el.classList.add("pop")});await sleep(210);if(token!==runToken)return;m.forEach(([r,c])=>board[r][c]=0);score+=wave.pairs.length*100*chain;gravity();render();await sleep(160)}
 if(token!==runToken)return;if(chain>=4)show("PERFECT TEN!");updateObjective(totalTens,totalCleared,chain);scoreEl.textContent=score;if(score>best){best=score;localStorage.setItem("tenDropBest",best);bestEl.textContent=best}}
 function updateObjective(tens,clears,chain){let l=levels[level];if(!l)return;if(l.type==="tens")progress+=tens;if(l.type==="clears")progress+=clears;if(l.type==="score")progress=score-levelScoreStart;if(l.type==="chain")progress=Math.max(progress,chain);updateHud();if(progress>=l.target&&!levelClearPending){levelClearPending=true;const token=runToken;levelTimer=setTimeout(()=>{if(token===runToken)levelClear()},420)}}
-function levelClear(){clearTimeout(timer);clearTimeout(levelTimer);levelTimer=null;locked=true;level++;progress=0;levelScoreStart=score;levelClearPending=false;if(level>=levels.length){showModal("CHAPTER CLEAR!","Five levels down. No ad here — this is the natural-break placeholder.","PLAY AGAIN",()=>reset(true))}else{showModal("LEVEL "+level+" CLEAR!","Next: "+levels[level].label,"NEXT LEVEL",()=>{locked=false;updateHud();spawn()})}}
+function levelClear(){clearTimeout(timer);clearTimeout(levelTimer);levelTimer=null;locked=true;level++;progress=0;levelScoreStart=score;levelClearPending=false;board=makeBoard();active=null;if(level>=levels.length){showModal("CHAPTER CLEAR!","Five levels down. No ad here — this is the natural-break placeholder.","PLAY AGAIN",()=>reset(true))}else{show("LEVEL "+level+" CLEAR!");updateHud();const token=runToken;levelTimer=setTimeout(()=>{if(token!==runToken)return;levelTimer=null;locked=false;spawn()},900)}}
 function showModal(title,text,action,fn){$("#modalTitle").textContent=title;$("#modalText").textContent=text;$("#modalAction").textContent=action;$("#modal").classList.remove("hidden");$("#modalAction").onclick=()=>{$("#modal").classList.add("hidden");fn()}}
 function gameOver(){clearTimeout(timer);locked=true;showModal("SO CLOSE!","Score "+score+" · Best "+Math.max(score,best),"RETRY LEVEL "+(level+1),()=>reset(false))}
 function reset(resetChapter=false){runToken++;clearTimeout(timer);clearTimeout(levelTimer);levelTimer=null;board=makeBoard();active=null;queue=[];bag=[];score=0;if(resetChapter)level=0;progress=0;levelScoreStart=0;levelClearPending=false;fallMs=850;locked=false;scoreEl.textContent=0;bestEl.textContent=best;updateHud();spawn()}

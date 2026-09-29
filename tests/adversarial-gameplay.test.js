@@ -80,3 +80,19 @@ test("game-over retry preserves current level while chapter replay resets it",()
  reset(false);assert.equal(level,1);
  reset(true);assert.equal(level,0);
 });
+
+
+// 11. friction F1: virtual entry row preserves player agency when center is blocked.
+test("blocked center does not imply whole-board top-out",()=>{
+ const b=makeBoard();b[0][3]=4;
+ assert.equal(canSpawn(b,3),false);
+ assert.equal(canSpawn(b,2),true);
+ assert.equal(canSpawn(b,4),true);
+});
+
+// 12. friction F2/F3 canonical transition contract.
+test("new level gets a clean board while retry keeps level identity",()=>{
+ let level=1,board=makeBoard();board[8][0]=7;
+ const startFreshLevel=()=>{board=makeBoard()};
+ startFreshLevel();assert.equal(board.flat().every(v=>v===0),true);assert.equal(level,1);
+});

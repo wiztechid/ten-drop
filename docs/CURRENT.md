@@ -221,3 +221,13 @@ Engine correctness is **GO pending CI/device regression**. Gameplay feel/retenti
 Executable adversarial CI added to PR #2 and bound to the same shared `js/core.js` used by the live browser game. Covered: overlapping `9-1-9`, simultaneous pairs, deterministic chain ×2 and ×3, gravity ordering, Fair-Bag permutation/boundary, restart-during-cascade token invalidation, stale level-clear invalidation, and center-spawn top-out semantics.
 
 GitHub Actions `TEN DROP Smoke Gate` run #17: **PASS** on syntax, adversarial engine tests, static entrypoint and core invariants.
+
+
+## UX / Gameplay Friction Audit v0.3 — 2026-09-30
+
+Three gameplay-friction changes implemented on `friction-audit-v0.3` without cosmetic redesign:
+1. Spawn fairness: virtual entry row gives the player horizontal agency before top-out; blocked center alone no longer means immediate Game Over.
+2. Level continuity: each newly reached level begins on a clean board; retry preserves current level identity.
+3. Flow: Levels 1–4 use a short non-blocking clear transition (~900 ms); blocking modal remains only for Game Over and Chapter Clear.
+
+Status: **pending CI + real-device regression before merge/freeze.**
