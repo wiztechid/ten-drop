@@ -17,24 +17,21 @@ test("simultaneous pairs share one cascade wave",()=>{
  const r=resolveBoard(b);assert.equal(r.chain,1);assert.equal(r.tens,2);assert.equal(r.score,200);
 });
 
-// 3. deterministic chain x2: first pair clears support, then 1 falls beside 9.
+// 3. deterministic chain x2: support pair clears, staggered complements become adjacent after gravity.
 test("gravity can create deterministic chain x2",()=>{
  const b=makeBoard();
- b[8][0]=4;b[8][1]=6; // wave 1
- b[7][0]=1;b[8][2]=9; // 1 falls to [8,0], then pairs with 9 at [8,2]? gap at 1 after clear
- b[7][1]=2; // falls to [8,1], intentionally blocks; remove for actual adjacency
- b[7][1]=0;
+ b[8][0]=4;b[8][1]=6; // wave 1 support pair
+ b[7][0]=1;b[6][1]=9; // initially diagonal; both fall to bottom after wave 1
  const r=resolveBoard(b);
  assert.equal(r.chain,2);assert.deepEqual(r.waves.map(x=>x.pairs),[1,1]);assert.equal(r.score,300);
 });
 
-// 4. deterministic chain x3.
+// 4. deterministic chain x3: each wave exposes the next staggered complement layer.
 test("cascade multiplier advances across three waves",()=>{
  const b=makeBoard();
- // bottom wave clears 4+6. Falling 3 meets 7; then falling 2 meets 8.
- b[8][0]=4;b[8][1]=6;
- b[7][0]=3;b[8][2]=7;
- b[6][0]=2;b[7][2]=8;
+ b[8][0]=4;b[8][1]=6; // wave 1
+ b[7][0]=1;b[6][1]=9; // wave 2 after gravity
+ b[6][0]=2;b[5][1]=8; // wave 3 after second gravity
  const r=resolveBoard(b);
  assert.equal(r.chain,3);assert.deepEqual(r.waves.map(x=>x.pairs),[1,1,1]);assert.equal(r.score,600);
 });
