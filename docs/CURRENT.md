@@ -1,8 +1,8 @@
 # TEN DROP — CURRENT
 
-**Status:** Gameplay / Visual Prototype  
+**Status:** Playable Web Prototype v0.3 — implementation branch ready for device testing  
 **Last updated:** 2026-09-29  
-**Decision:** GO — build playable v0.3 before Android production.
+**Decision:** GO — playable v0.3 implemented on `prototype-v0.3`; device gameplay QC required before Android production.
 
 ## 1. Product Thesis
 
@@ -113,7 +113,9 @@ Principle: **Player flow > one extra ad impression.**
 
 ## 7. v0.3 Playable Gate
 
-Implement and test:
+Implementation status: **BUILT — pending real-device gameplay QC.**
+
+Implemented/test targets:
 1. Live-drop 6×9 board.
 2. Numberling gameplay presentation.
 3. Left/right/hard-drop responsiveness.
@@ -164,3 +166,28 @@ Repository: **wiztechid/ten-drop**
 All approved gameplay, visual, progression, monetization, ASO or production decisions must be reflected here. Brainstorming is not canonical until approved/frozen.
 
 GitHub is now the canonical project home. The previous Google Drive copy is historical/reference only and should not be maintained in parallel.
+
+
+## 10. Implementation Snapshot — v0.3
+
+Branch: `prototype-v0.3`
+
+Implemented:
+- Dependency-free HTML/CSS/JS playable vertical slice.
+- Mobile buttons + swipe controls + keyboard fallback.
+- 6×9 live-drop board, Make-10 resolution, gravity and cascades.
+- Two-copy shuffled 1–9 Fair-Bag prototype.
+- Immutable NOW + NEXT + NEXT queue.
+- CSS jelly Numberling placeholders with approved number colors.
+- TEN-TASTIC, FEVER 10 and PERFECT TEN feedback states.
+- Five micro-level objectives and Chapter Clear natural-break placeholder.
+- Persistent local high score.
+- Progression guard prevents duplicate level-clear scheduling.
+- Score objective measures score earned within its level rather than lifetime chapter score.
+
+Not yet production-approved:
+- Real-device feel and retention.
+- Final Numberling art/animation.
+- Audio/haptics.
+- Analytics.
+- AdMob.
