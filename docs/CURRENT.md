@@ -241,3 +241,10 @@ Stable baseline remains v0.3 on `main`. Branch `engagement-gimmick-v0.4` tests t
 - LAST DROP gives one 1.4-second player-controlled clutch entry opportunity when the selected top entry is blocked but another column remains open.
 
 No RNG rescue, booster, blocker, wildcard, ad, or permanent meta-system is added. v0.4 must beat v0.3 in real-device feel before any merge decision.
+
+
+### v0.4 Preview Gate
+
+Deep Gimmick QC Pass 2 completed. Smoke Gate #32 PASS on head 408d1f428e3683c80ce997ec7bfeea385f91491e before preview-workflow addition. v0.4 remains experimental and unmerged. An isolated GitHub Actions preview artifact workflow packages the branch after syntax + adversarial tests, without changing the production GitHub Pages source on main.
+
+A/B rule: compare stable v0.3 production against the exact v0.4 artifact build. Evaluate Make-10 satisfaction, intentional pursuit of CHAIN ×3, LAST DROP clutch comprehension, and immediate desire to replay after Game Over. Each gimmick receives KEEP / TUNE / KILL independently; the package is not all-or-nothing.
