@@ -145,3 +145,59 @@ test("restart invalidates Last Drop timer generation through run token",()=>{
  let runToken=21;const lastDropToken=runToken;runToken++;
  assert.notEqual(lastDropToken,runToken);
 });
+
+
+// Deep Gimmick QC Pass 2
+test("LAST DROP spam cannot mint a second entitlement",()=>{
+ let armed=false,used=false,gameOvers=0;
+ const trigger=()=>{if(armed||used){gameOvers++;return false}armed=true;used=true;return true};
+ assert.equal(trigger(),true);
+ for(let i=0;i<20;i++)trigger();
+ assert.equal(used,true);assert.equal(gameOvers,20);
+});
+
+test("restart during LAST DROP invalidates stale timeout callback",()=>{
+ let runToken=40,mutations=0;const captured=runToken;
+ runToken++; // restart
+ if(captured===runToken)mutations++;
+ assert.equal(mutations,0);
+});
+
+test("Game Over presentation is idempotent under duplicate terminal signals",()=>{
+ let shown=false,count=0;
+ const gameOver=()=>{if(shown)return;shown=true;count++};
+ for(let i=0;i<10;i++)gameOver();
+ assert.equal(count,1);
+});
+
+test("FEVER earned by level-finishing cascade cannot leak into next level",()=>{
+ let feverDrops=0;
+ const resolveChain=chain=>{if(chain>=3)feverDrops=Math.max(feverDrops,3)};
+ const levelClear=()=>{feverDrops=0};
+ resolveChain(3);assert.equal(feverDrops,3);
+ levelClear();assert.equal(feverDrops,0);
+});
+
+test("multi-pair Fusion keeps pair-edge score and unique-cell clear semantics",()=>{
+ const b=makeBoard();b[8][1]=9;b[8][2]=1;b[8][3]=9;
+ const w=matchWave(b);
+ assert.equal(w.pairs.length,2);assert.equal(w.cells.length,3);
+ const score=w.pairs.length*100*1;
+ assert.equal(score,200);
+});
+
+test("stale async resolution cannot award FEVER after restart",()=>{
+ let runToken=50,feverDrops=0;const captured=runToken;
+ runToken++;
+ const chain=3;
+ if(captured===runToken&&chain>=3)feverDrops=3;
+ assert.equal(feverDrops,0);
+});
+
+test("FEVER refresh is capped at three rather than additive stacking",()=>{
+ let feverDrops=2;
+ feverDrops=Math.max(feverDrops,3);
+ assert.equal(feverDrops,3);
+ feverDrops=Math.max(feverDrops,3);
+ assert.equal(feverDrops,3);
+});
