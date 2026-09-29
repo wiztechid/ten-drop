@@ -29,9 +29,11 @@ test("gravity can create deterministic chain x2",()=>{
 // 4. deterministic chain x3: each wave exposes the next staggered complement layer.
 test("cascade multiplier advances across three waves",()=>{
  const b=makeBoard();
- b[8][0]=4;b[8][1]=6; // wave 1
- b[7][0]=1;b[6][1]=9; // wave 2 after gravity
- b[6][0]=2;b[5][1]=8; // wave 3 after second gravity
+ // Adversarial staggered topology verified to produce exactly three one-pair waves.
+ b[5][1]=8;b[5][3]=8;
+ b[6][2]=5;b[6][3]=2;
+ b[7][1]=4;
+ b[8][2]=6;b[8][3]=5;
  const r=resolveBoard(b);
  assert.equal(r.chain,3);assert.deepEqual(r.waves.map(x=>x.pairs),[1,1,1]);assert.equal(r.score,600);
 });
