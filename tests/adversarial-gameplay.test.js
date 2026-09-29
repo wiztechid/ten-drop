@@ -148,12 +148,13 @@ test("restart invalidates Last Drop timer generation through run token",()=>{
 
 
 // Deep Gimmick QC Pass 2
-test("LAST DROP spam cannot mint a second entitlement",()=>{
- let armed=false,used=false,gameOvers=0;
- const trigger=()=>{if(armed||used){gameOvers++;return false}armed=true;used=true;return true};
+test("LAST DROP spam is idempotent while countdown is armed",()=>{
+ let armed=false,used=false,gameOvers=0,arms=0;
+ const trigger=()=>{if(armed)return false;if(used){gameOvers++;return false}armed=true;used=true;arms++;return true};
  assert.equal(trigger(),true);
  for(let i=0;i<20;i++)trigger();
- assert.equal(used,true);assert.equal(gameOvers,20);
+ assert.equal(arms,1);assert.equal(used,true);assert.equal(gameOvers,0);
+ armed=false;trigger();assert.equal(gameOvers,1);
 });
 
 test("restart during LAST DROP invalidates stale timeout callback",()=>{
