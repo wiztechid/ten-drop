@@ -191,3 +191,14 @@ Not yet production-approved:
 - Audio/haptics.
 - Analytics.
 - AdMob.
+
+
+## Post-Deployment Smoke QC — 2026-09-30
+
+Live GitHub Pages deployment confirmed by real-device screenshot.
+
+Observed working: page render, 6×9 board, active falling Numberling, score/best HUD, Level 1 objective/progress, bottom controls, deployed CSS/JS runtime.
+
+P1 found and patched: NOW/NEXT mini Numberling inherited absolute board positioning and escaped the preview container to the upper-left viewport. Preview slots now establish their own positioning context and mini Numberlings use relative positioning. Tablet/landscape viewport received a small responsive-height polish.
+
+Status: **LIVE — post-patch device recheck required before v0.3 visual freeze.**
