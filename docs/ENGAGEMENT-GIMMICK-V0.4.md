@@ -62,3 +62,22 @@ Do not merge v0.4 into stable gameplay if:
 - Last Drop produces understandable clutch tension.
 - Player wants another run more strongly than in v0.3.
 - No regression in fairness, preview truthfulness, RNG, or restart isolation.
+
+
+## Deep Gimmick QC — Pass 1
+
+Adversarial review found and closed before preview:
+
+### P1 — LAST DROP repeat entitlement
+lastDropArmed described countdown state but did not permanently record that the current piece had already consumed its one clutch opportunity. Added separate lastDropUsed state. A successful clutch disarms the countdown but does not restore entitlement for that piece.
+
+### P1 — FEVER cross-level leakage
+A CHAIN ×3 that also completed a level could leave FEVER drops active in the next clean-board level. Level transition now clears FEVER and all Last Drop transient state.
+
+### P2 — stale visual pulse
+LAST DROP board pulse could survive after clutch/timeout. Pulse state now has deterministic cleanup on spawn, clutch, timeout, level transition and reset.
+
+### FEVER re-trigger semantics
+A FEVER-active drop may itself earn CHAIN ×3. This refreshes the bounded counter to 3 via Math.max(feverDrops, 3); it never stacks beyond 3. The score multiplier applies to the full cascade produced by a FEVER-active locked drop.
+
+Status: implementation patched; CI rerun required.
