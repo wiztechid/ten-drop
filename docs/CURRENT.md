@@ -309,3 +309,18 @@ To avoid subjective screenshot inference, v0.6.1 LAB now exposes read-only sessi
 Smoke Gate #75: **PASS** on syntax, adversarial engine, static entrypoint, and core invariants.
 
 Next Core DNA decision must use objective telemetry plus matched deliberate/spam sessions; incomplete browser-agent runs must not be scored as A/B evidence.
+
+
+### Core DNA Deliberate-vs-Spam Diagnostic — Smoke #83
+
+A deterministic matched-seed engine experiment now runs 100 paired sessions (same Fair-Bag seeds; max 180 drops/session). The deliberate policy evaluates legal placements using the current board plus truthful NEXT/NEXT setup potential; the spam control chooses random legal columns without board strategy. This is a capability diagnostic, not a substitute for human play.
+
+Observed:
+- Deliberate: 180.0 avg drops, 44.53 two-number TENs/100 drops, 2.26 three-number TENs/100, 0.06 CHAIN×2+/100, 4684.4 score/100.
+- Spam: 165.7 avg drops, 19.50 two-number TENs/100 drops, 9.88 three-number TENs/100, 2.16 CHAIN×2+/100, 3273.4 score/100.
+- Deliberate clearly improves survival and score, but **three-number TENs and cascades occur more often under chaotic placement** in this diagnostic.
+- Signal: `survival=true`, `ten3Skill=false`, `chainSkill=false`.
+
+Interpretation: v0.6.1 currently demonstrates strategic value in deliberate placement overall, but does **not yet demonstrate that the 3-number rule or CHAIN is itself intentional skill expression**. Three-number TENs may currently function more as incidental board-resolution events than planned constructions. Therefore v0.6.1 remains **NOT FROZEN as Core DNA**.
+
+Do not solve this with auto-hints. The next design experiment should test incentive/board-rule changes that make preserving/building a 3-number TEN strategically worthwhile while retaining player inference. Any such change requires a separate experimental revision and matched diagnostic before human feel validation.
