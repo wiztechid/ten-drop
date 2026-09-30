@@ -224,9 +224,9 @@ test("connected 3-number group summing exactly 10 clears as one TEN",()=>{
  const b=makeBoard();b[8][0]=2;b[8][1]=3;b[8][2]=5;
  const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.groups[0].length,3);assert.equal(w.cells.length,3);
 });
-test("connected 4-number group summing exactly 10 clears as one TEN",()=>{
+test("four-number exact 10 is invalid under v0.6.1 cap",()=>{
  const b=makeBoard();b[8][0]=1;b[8][1]=2;b[8][2]=3;b[8][3]=4;
- const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.groups[0].length,4);assert.equal(w.cells.length,4);
+ const w=matchWave(b);assert.equal(w.groups.length,0);assert.equal(w.cells.length,0);
 });
 test("connected group over 10 is invalid and does not clear",()=>{
  const b=makeBoard();b[8][0]=4;b[8][1]=3;b[8][2]=5;
@@ -251,13 +251,13 @@ test("L-shape connected group is valid",()=>{
  const b=makeBoard();b[8][0]=2;b[7][0]=3;b[7][1]=5;
  const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.groups[0].length,3);
 });
-test("T-shape four-cell connected group is valid",()=>{
+test("T-shape four-cell exact 10 is invalid under three-Numberling cap",()=>{
  const b=makeBoard();b[7][1]=1;b[7][0]=2;b[7][2]=3;b[8][1]=4;
- const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.groups[0].length,4);
+ assert.equal(matchWave(b).groups.length,0);
 });
 test("five-cell component may clear an exact connected subset of at most four, leaving unused cell",()=>{
  const b=makeBoard();b[8][0]=1;b[8][1]=2;b[8][2]=3;b[8][3]=4;b[7][1]=9;
- const w=matchWave(b);assert.ok(w.groups.some(g=>g.length>=2&&g.length<=4));assert.ok(w.cells.length<=4);
+ const w=matchWave(b);assert.ok(w.groups.some(g=>g.length>=2&&g.length<=3));assert.ok(w.cells.length<=3);
 });
 test("disconnected exact-sum subset inside a larger component is never accepted",()=>{
  const b=makeBoard();b[8][0]=5;b[8][1]=9;b[8][2]=5;
@@ -277,9 +277,9 @@ test("3-number group scores as one TEN, not three pair-equivalents",()=>{
  const b=makeBoard();b[8][0]=2;b[8][1]=3;b[8][2]=5;
  const r=resolveBoard(b);assert.equal(r.tens,1);assert.equal(r.clears,3);assert.equal(r.score,100);
 });
-test("4-number group scores as one TEN, not four cell bonuses",()=>{
+test("four-number exact 10 cannot launder score",()=>{
  const b=makeBoard();b[8][0]=1;b[8][1]=2;b[8][2]=3;b[8][3]=4;
- const r=resolveBoard(b);assert.equal(r.tens,1);assert.equal(r.clears,4);assert.equal(r.score,100);
+ const r=resolveBoard(b);assert.equal(r.tens,0);assert.equal(r.clears,0);assert.equal(r.score,0);
 });
 test("3-number first wave can gravity-cascade into a second TEN",()=>{
  const b=makeBoard();b[8][0]=2;b[8][1]=3;b[8][2]=5;b[7][0]=4;b[6][1]=6;
@@ -289,4 +289,13 @@ test("dense 6x9 candidate enumeration remains bounded for browser play",()=>{
  const b=makeBoard();for(let r=0;r<9;r++)for(let c=0;c<6;c++)b[r][c]=1+((r*6+c)%4);
  const start=process.hrtime.bigint();const cs=tenCandidates(b);const ms=Number(process.hrtime.bigint()-start)/1e6;
  assert.ok(cs.length<20000,"candidate explosion: "+cs.length);assert.ok(ms<250,"enumeration too slow: "+ms.toFixed(1)+"ms");
+});
+
+test("all resolved TEN groups are bounded to 2 or 3 Numberlings",()=>{
+ const b=makeBoard();for(let r=0;r<9;r++)for(let c=0;c<6;c++)b[r][c]=1+((r+c)%5);
+ const w=matchWave(b);assert.ok(w.groups.every(g=>g.length>=2&&g.length<=3));
+});
+test("intentionality contract exposes no runtime landing-answer helper",()=>{
+ const fs=require("node:fs"),src=fs.readFileSync(require("node:path").join(__dirname,"../js/game.js"),"utf8");
+ assert.equal(src.includes("plannedLandingCells"),false);assert.equal(src.includes("chain-ready"),false);
 });
