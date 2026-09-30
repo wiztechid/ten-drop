@@ -255,9 +255,9 @@ test("T-shape four-cell exact 10 is invalid under three-Numberling cap",()=>{
  const b=makeBoard();b[7][1]=1;b[7][0]=2;b[7][2]=3;b[8][1]=4;
  assert.equal(matchWave(b).groups.length,0);
 });
-test("five-cell component may clear an exact connected subset of at most four, leaving unused cell",()=>{
- const b=makeBoard();b[8][0]=1;b[8][1]=2;b[8][2]=3;b[8][3]=4;b[7][1]=9;
- const w=matchWave(b);assert.ok(w.groups.some(g=>g.length>=2&&g.length<=3));assert.ok(w.cells.length<=3);
+test("larger component may clear exact connected three-cell subset while leaving extras",()=>{
+ const b=makeBoard();b[8][0]=2;b[8][1]=3;b[8][2]=5;b[8][3]=4;b[7][1]=9;
+ const w=matchWave(b);assert.ok(w.groups.some(g=>g.length===3));assert.ok(w.cells.length<=3);
 });
 test("disconnected exact-sum subset inside a larger component is never accepted",()=>{
  const b=makeBoard();b[8][0]=5;b[8][1]=9;b[8][2]=5;
