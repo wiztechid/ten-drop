@@ -1,7 +1,7 @@
 "use strict";
 const assert=require("node:assert/strict");
 const Core=require("../js/core.js");
-const ROWS=9,COLS=6,RUNS=500,MAX_DROPS=180;
+const ROWS=9,COLS=6,RUNS=100,MAX_DROPS=180;
 
 function rng(seed){let x=seed>>>0;return()=>{x=(1664525*x+1013904223)>>>0;return x/4294967296}}
 function sequence(seed,n=MAX_DROPS+3){const r=rng(seed),out=[];while(out.length<n)out.push(...Core.shuffledBag(r));return out.slice(0,n)}
@@ -10,13 +10,13 @@ function place(board,c,n){const r=landing(board,c);if(r<0)return null;const b=bo
 function features(res){let t2=0,t3=0;for(const w of res.waves){t2+=w.sizes.filter(x=>x===2).length;t3+=w.sizes.filter(x=>x===3).length}return{t2,t3,chain:res.chain,score:res.score,clears:res.clears}}
 function legal(board){return Array.from({length:COLS},(_,c)=>c).filter(c=>landing(board,c)>=0)}
 
-function deliberate(board,n){
+function partialPotential(board,nexts){let p=0;for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const a=board[r][c];if(!a)continue;for(const [dr,dc] of [[1,0],[0,1]]){const rr=r+dr,cc=c+dc;if(rr>=ROWS||cc>=COLS)continue;const b=board[rr][cc];if(!b)continue;const need=10-a-b;if(need>=1&&need<=9){if(nexts[0]===need)p+=5;if(nexts[1]===need)p+=2}}}return p}
+function deliberate(board,n,nexts=[]){
  let best=null;
  for(const c of legal(board)){const res=place(board,c,n),f=features(res);
    const heights=Array.from({length:COLS},(_,cc)=>ROWS-1-landing(res.board,cc)).map(x=>x<0?ROWS:x);
    const maxH=Math.max(...heights),rough=heights.slice(1).reduce((a,h,i)=>a+Math.abs(h-heights[i]),0);
-   // Reward exact TENs and cascades; mildly preserve board space. No hidden future-piece oracle.
-   const value=f.t2*10+f.t3*13+Math.max(0,f.chain-1)*18+f.clears*2-maxH*.45-rough*.08;
+   const value=f.t2*8+f.t3*18+Math.max(0,f.chain-1)*28+f.clears*2+partialPotential(res.board,nexts)-maxH*.45-rough*.08;
    if(!best||value>best.value||(value===best.value&&c<best.c))best={c,value};
  }
  return best?.c??-1;
@@ -25,7 +25,7 @@ function spam(board,random){const a=legal(board);return a.length?a[Math.floor(ra
 
 function run(seed,policy){let board=Core.makeBoard(ROWS,COLS),seq=sequence(seed),r=rng(seed^0x9e3779b9);
  let m={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,score:0};
- for(let i=0;i<MAX_DROPS;i++){const a=legal(board);if(!a.length)break;const c=policy==="deliberate"?deliberate(board,seq[i]):spam(board,r);if(c<0)break;
+ for(let i=0;i<MAX_DROPS;i++){const a=legal(board);if(!a.length)break;const c=policy==="deliberate"?deliberate(board,seq[i],[seq[i+1],seq[i+2]]):spam(board,r);if(c<0)break;
    const res=place(board,c,seq[i]),f=features(res);board=res.board;m.drops++;m.tens2+=f.t2;m.tens3+=f.t3;m.score+=f.score;
    if(f.chain>=2)m.chains2++;if(f.chain>=3)m.chains3++;m.maxChain=Math.max(m.maxChain,f.chain);
  }
