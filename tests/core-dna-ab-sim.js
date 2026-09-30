@@ -66,3 +66,33 @@ function runChainAware(seed,level=4){let board=Core.makeBoard(ROWS,COLS),seq=seq
 const chainOpportunity=[];
 for(let level=0;level<5;level++){const ca=[],sp=[];for(let seed=1;seed<=RUNS;seed++){ca.push(runChainAware(seed,level));sp.push(run(seed,"spam",level))}chainOpportunity.push({level:level+1,pool:Core.unlockedPool(level),chainAware:report(ca),spam:report(sp)})}
 console.log("CHAIN_OPPORTUNITY",JSON.stringify(chainOpportunity));
+
+function latentGravityPairs(board){
+ let count=0;
+ // Detect complementary values in adjacent columns whose vertical separation could close
+ // after cells below one/both are removed. This is diagnostic only; runtime receives no hint.
+ for(let c=0;c<COLS-1;c++)for(let r1=0;r1<ROWS;r1++){const a=board[r1][c];if(!a)continue;
+  for(let r2=0;r2<ROWS;r2++){const b=board[r2][c+1];if(!b||a+b!==10||r1===r2)continue;
+   const below1=board.slice(r1+1).filter(row=>row[c]).length;
+   const below2=board.slice(r2+1).filter(row=>row[c+1]).length;
+   if(Math.abs(below1-below2)>0)count++;
+  }}
+ return count;
+}
+function setupAware(board,n,nexts=[]){
+ let best=null;
+ for(const c of legal(board)){const res=place(board,c,n),f=features(res);
+  const heights=Array.from({length:COLS},(_,cc)=>ROWS-1-landing(res.board,cc)).map(x=>x<0?ROWS:x);
+  const maxH=Math.max(...heights),rough=heights.slice(1).reduce((a,h,i)=>a+Math.abs(h-heights[i]),0);
+  const latent=latentGravityPairs(res.board);
+  const value=Math.max(0,f.chain-1)*300+latent*7+f.t3*18+f.t2*8+partialPotential(res.board,nexts)*1.2-maxH*.45-rough*.08;
+  if(!best||value>best.value||(value===best.value&&c<best.c))best={c,value};
+ }
+ return best?.c??-1;
+}
+function runSetupAware(seed,level=4){let board=Core.makeBoard(ROWS,COLS),seq=sequence(seed,MAX_DROPS+3,level),m={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,score:0};
+ for(let i=0;i<MAX_DROPS;i++){if(!legal(board).length)break;const c=setupAware(board,seq[i],[seq[i+1],seq[i+2]]);if(c<0)break;const res=place(board,c,seq[i]),f=features(res);board=res.board;m.drops++;m.tens2+=f.t2;m.tens3+=f.t3;m.score+=f.score;if(f.chain>=2)m.chains2++;if(f.chain>=3)m.chains3++;m.maxChain=Math.max(m.maxChain,f.chain)}return m;
+}
+const latentDiagnostic=[];
+for(let level=0;level<5;level++){const sa=[],sp=[];for(let seed=1;seed<=RUNS;seed++){sa.push(runSetupAware(seed,level));sp.push(run(seed,"spam",level))}latentDiagnostic.push({level:level+1,pool:Core.unlockedPool(level),setupAware:report(sa),spam:report(sp)})}
+console.log("LATENT_CHAIN_DIAGNOSTIC",JSON.stringify(latentDiagnostic));
