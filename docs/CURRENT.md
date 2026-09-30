@@ -298,3 +298,14 @@ Preview:
 - First deployment check returned 404 while GitHub Pages was propagating; LIVE status must be verified before playtest.
 
 Freeze status: **NOT FROZEN**. Next gate is a comparable gameplay feel test asking whether players intentionally build 3-number TENs and engineer gravity CHAINs without hints.
+
+
+### Core DNA A/B Gate — Instrumentation Upgrade
+
+Direct browser-agent A/B attempts against the live falling-piece UI timed out before producing a complete controlled comparison; incomplete runs are explicitly excluded from evidence.
+
+To avoid subjective screenshot inference, v0.6.1 LAB now exposes read-only session telemetry via `TenDropTelemetry()`: locked drops, 2-number TENs, 3-number TENs, CHAIN ×2+, CHAIN ×3+, and maximum cascade depth. Telemetry does not recommend moves, alter RNG, expose complements, or change gameplay. An adversarial guard prevents the telemetry layer from reintroducing landing/recommended-column hints.
+
+Smoke Gate #75: **PASS** on syntax, adversarial engine, static entrypoint, and core invariants.
+
+Next Core DNA decision must use objective telemetry plus matched deliberate/spam sessions; incomplete browser-agent runs must not be scored as A/B evidence.
