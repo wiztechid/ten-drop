@@ -1,6 +1,7 @@
 (()=>{"use strict";
 const COLS=6,ROWS=9,EMPTY=0;
-const Core=window.TenDropCore;\nconst {groupBaseScore}=Core;
+const Core=window.TenDropCore;
+const {groupBaseScore,unlockedMaxForLevel}=Core;\nconst {groupBaseScore}=Core;
 const colors=n=>"n"+n;
 const levels=[
  {type:"tens",target:5,label:"Make 5 Tens"},
@@ -46,7 +47,7 @@ function render(){boardEl.innerHTML="";let near=nearCells(),topLoad=board[0].fil
 function renderEntryPiece(){const el=$("#entryPiece");if(!el)return;el.innerHTML="";if(active&&active.r<0){el.classList.add("show");el.style.left=`calc(${active.c} * (100% / ${COLS}))`;el.appendChild(blob(active.n,true,false))}else el.classList.remove("show")}
 function mini(el,n){el.innerHTML="";let b=blob(n);b.classList.add("mini");el.appendChild(b)}
 function renderPreview(){if(active)mini($("#now"),active.n);if(queue[0])mini($("#next1"),queue[0]);if(queue[1])mini($("#next2"),queue[1])}
-function updateHud(){let l=levels[level]||levels[0];$("#levelLabel").textContent="LEVEL "+(level+1);$("#objective").textContent=l.label;$("#progress").style.width=Math.min(100,(progress/l.target)*100)+"%"}
+function updateHud(){let l=levels[level]||levels[0];$("#levelLabel").textContent="LEVEL "+(level+1)+" · 1–"+unlockedMaxForLevel(level);$("#objective").textContent=l.label;$("#progress").style.width=Math.min(100,(progress/l.target)*100)+"%"}
 $("#left").onclick=()=>move(-1);$("#right").onclick=()=>move(1);$("#drop").onclick=hardDrop;$("#restart").onclick=()=>reset(false);
 document.addEventListener("keydown",e=>{if(e.key==="ArrowLeft")move(-1);if(e.key==="ArrowRight")move(1);if(e.key==="ArrowDown"||e.key===" ")hardDrop()});
 let sx=0,sy=0;boardEl.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});boardEl.addEventListener("touchend",e=>{let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>35&&Math.abs(dx)>Math.abs(dy))move(dx>0?1:-1);else if(dy>45)hardDrop()},{passive:true});
