@@ -12,7 +12,7 @@ function tenCandidates(board){
     const sorted=canonical(cells),sig=sorted.map(key).join("|");
     if(seen.has(sig))return;seen.add(sig);
     if(sum===10&&sorted.length>=2){out.set(sig,sorted);return}
-    if(sum>=10||sorted.length>=4)return;
+    if(sum>=10||sorted.length>=3)return;
     const member=new Set(sorted.map(key)),frontier=new Map();
     for(const [r,c] of sorted)for(const [dr,dc] of DIRS){const rr=r+dr,cc=c+dc,k=rr+","+cc;if(rr>=0&&rr<rows&&cc>=0&&cc<cols&&board[rr][cc]&&!member.has(k))frontier.set(k,[rr,cc])}
     for(const p of [...frontier.values()].sort((a,b)=>a[0]-b[0]||a[1]-b[1])){
