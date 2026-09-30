@@ -9,7 +9,8 @@ const levels=[
  {type:"chain",target:2,label:"Make CHAIN ×2"},
  {type:"tens",target:10,label:"Make 10 Tens"}
 ];
-let telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0};\nlet board,active,queue=[],score=0,best=+localStorage.getItem("tenDropBest")||0,level=0,progress=0,levelScoreStart=0,timer=null,fallMs=850,locked=false,bag=[],levelClearPending=false,levelTimer=null,runToken=0,feverDrops=0,lastDropArmed=false,lastDropUsed=false,lastDropTimer=null,gameOverShown=false;
+let telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0};
+let board,active,queue=[],score=0,best=+localStorage.getItem("tenDropBest")||0,level=0,progress=0,levelScoreStart=0,timer=null,fallMs=850,locked=false,bag=[],levelClearPending=false,levelTimer=null,runToken=0,feverDrops=0,lastDropArmed=false,lastDropUsed=false,lastDropTimer=null,gameOverShown=false;
 const $=s=>document.querySelector(s),boardEl=$("#board"),scoreEl=$("#score"),bestEl=$("#best"),callout=$("#callout");
 function makeBoard(){return Array.from({length:ROWS},()=>Array(COLS).fill(EMPTY))}
 function refillBag(){bag=Core.shuffledBag()}
@@ -49,5 +50,6 @@ function updateHud(){let l=levels[level]||levels[0];$("#levelLabel").textContent
 $("#left").onclick=()=>move(-1);$("#right").onclick=()=>move(1);$("#drop").onclick=hardDrop;$("#restart").onclick=()=>reset(false);
 document.addEventListener("keydown",e=>{if(e.key==="ArrowLeft")move(-1);if(e.key==="ArrowRight")move(1);if(e.key==="ArrowDown"||e.key===" ")hardDrop()});
 let sx=0,sy=0;boardEl.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});boardEl.addEventListener("touchend",e=>{let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>35&&Math.abs(dx)>Math.abs(dy))move(dx>0?1:-1);else if(dy>45)hardDrop()},{passive:true});
-window.TenDropTelemetry=()=>JSON.parse(JSON.stringify(telemetry));\nreset(true);
+window.TenDropTelemetry=()=>JSON.parse(JSON.stringify(telemetry));
+reset(true);
 })();
