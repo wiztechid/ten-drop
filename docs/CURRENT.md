@@ -483,3 +483,25 @@ Interpretation:
 - Preserve the v0.6.3 unlock progression and existing gravity semantics.
 - **PROVISIONAL CORE DNA:** early TEN-3 learning → mixed midgame → late pair efficiency + multi-drop gravity CHAIN mastery.
 - Overall status remains **NOT FROZEN** pending human discoverability/feel validation. Do not add auto-hints to force discovery.
+
+
+### Human Discoverability Instrumentation Gate
+
+Smoke Gate #109: **PASS / GREEN** at commit `b4a0d6c`.
+
+Passive runtime telemetry now records:
+- drop index of the first CHAIN×2+ discovery;
+- subsequent CHAIN count after the first discovery;
+- CHAIN event level and depth;
+- existing TEN-2/TEN-3, CHAIN×2/×3 and max-chain metrics;
+- explicit telemetry reset for clean playtest sessions.
+
+Guardrails:
+- no CHAIN hint;
+- no recommended move/column/path;
+- no physics change;
+- no unlock-progression change;
+- no additional rescue mechanic.
+
+Engineering status: **CLOSED / GREEN**.
+Next gate is behavioral human playtesting: determine whether players discover gravity CHAIN unaided and whether CHAIN frequency rises after first discovery. Core DNA remains **NOT FROZEN** until this human-discoverability evidence exists.
