@@ -1,6 +1,6 @@
 "use strict";
 const assert=require("node:assert/strict");
-const {makeBoard,matchWave,gravity,resolveBoard,shuffledBag,canSpawn}=require("../js/core.js");
+const {makeBoard,tenCandidates,selectTenGroups,matchWave,gravity,resolveBoard,shuffledBag,canSpawn}=require("../js/core.js");
 let passed=0;
 function test(name,fn){try{fn();passed++;console.log("PASS",name)}catch(e){console.error("FAIL",name);throw e}}
 
@@ -179,12 +179,10 @@ test("FEVER earned by level-finishing cascade cannot leak into next level",()=>{
  levelClear();assert.equal(feverDrops,0);
 });
 
-test("multi-pair Fusion keeps pair-edge score and unique-cell clear semantics",()=>{
+test("overlap Fusion spends each Numberling at most once",()=>{
  const b=makeBoard();b[8][1]=9;b[8][2]=1;b[8][3]=9;
- const w=matchWave(b);
- assert.equal(w.pairs.length,2);assert.equal(w.cells.length,3);
- const score=w.pairs.length*100*1;
- assert.equal(score,200);
+ const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.cells.length,2);
+ assert.equal(w.groups.length*100,100);
 });
 
 test("stale async resolution cannot award FEVER after restart",()=>{
@@ -245,4 +243,50 @@ test("overlapping candidates never spend one Numberling twice in a wave",()=>{
 test("resolver prefers maximum non-overlapping cleared-cell coverage deterministically",()=>{
  const b=makeBoard();b[8][0]=1;b[8][1]=9;b[8][3]=2;b[8][4]=3;b[8][5]=5;
  const a=matchWave(b),z=matchWave(b);assert.equal(a.groups.length,2);assert.equal(a.cells.length,5);assert.deepEqual(a,z);
+});
+
+
+// Deep QC Group-to-10
+test("L-shape connected group is valid",()=>{
+ const b=makeBoard();b[8][0]=2;b[7][0]=3;b[7][1]=5;
+ const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.groups[0].length,3);
+});
+test("T-shape four-cell connected group is valid",()=>{
+ const b=makeBoard();b[7][1]=1;b[7][0]=2;b[7][2]=3;b[8][1]=4;
+ const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.groups[0].length,4);
+});
+test("five-cell component may clear an exact connected subset of at most four, leaving unused cell",()=>{
+ const b=makeBoard();b[8][0]=1;b[8][1]=2;b[8][2]=3;b[8][3]=4;b[7][1]=9;
+ const w=matchWave(b);assert.ok(w.groups.some(g=>g.length>=2&&g.length<=4));assert.ok(w.cells.length<=4);
+});
+test("disconnected exact-sum subset inside a larger component is never accepted",()=>{
+ const b=makeBoard();b[8][0]=5;b[8][1]=9;b[8][2]=5;
+ const cs=tenCandidates(b);assert.equal(cs.some(g=>g.length===2&&g.every(([r,c])=>c!==1)),false);
+});
+test("resolver tie is independent of candidate input order",()=>{
+ const b=makeBoard();b[8][0]=9;b[8][1]=1;b[8][2]=9;
+ const cs=tenCandidates(b),a=selectTenGroups(cs),z=selectTenGroups([...cs].reverse());
+ const sig=x=>x.map(g=>g.map(p=>p.join(",")).sort().join("|")).sort();
+ assert.deepEqual(sig(a),sig(z));
+});
+test("multiple overlapping candidates cannot inflate TEN count or cleared cells",()=>{
+ const b=makeBoard();b[8][1]=1;b[8][0]=9;b[8][2]=9;b[7][1]=9;
+ const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.cells.length,2);
+});
+test("3-number group scores as one TEN, not three pair-equivalents",()=>{
+ const b=makeBoard();b[8][0]=2;b[8][1]=3;b[8][2]=5;
+ const r=resolveBoard(b);assert.equal(r.tens,1);assert.equal(r.clears,3);assert.equal(r.score,100);
+});
+test("4-number group scores as one TEN, not four cell bonuses",()=>{
+ const b=makeBoard();b[8][0]=1;b[8][1]=2;b[8][2]=3;b[8][3]=4;
+ const r=resolveBoard(b);assert.equal(r.tens,1);assert.equal(r.clears,4);assert.equal(r.score,100);
+});
+test("3-number first wave can gravity-cascade into a second TEN",()=>{
+ const b=makeBoard();b[8][0]=2;b[8][1]=3;b[8][2]=5;b[7][0]=4;b[6][1]=6;
+ const r=resolveBoard(b);assert.equal(r.chain,2);assert.equal(r.tens,2);assert.equal(r.score,300);
+});
+test("dense 6x9 candidate enumeration remains bounded for browser play",()=>{
+ const b=makeBoard();for(let r=0;r<9;r++)for(let c=0;c<6;c++)b[r][c]=1+((r*6+c)%4);
+ const start=process.hrtime.bigint();const cs=tenCandidates(b);const ms=Number(process.hrtime.bigint()-start)/1e6;
+ assert.ok(cs.length<20000,"candidate explosion: "+cs.length);assert.ok(ms<250,"enumeration too slow: "+ms.toFixed(1)+"ms");
 });
