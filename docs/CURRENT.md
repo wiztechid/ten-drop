@@ -405,3 +405,31 @@ Matched-seed diagnostic by unlock stage (100 deliberate + 100 spam sessions per 
 Important: CHAIN remains much more frequent in spam across all stages, so Number Unlock Progression improves intentional three-number construction early but does **not** solve intentional cascade skill.
 
 Interpretation: staged unlock is the strongest experiment so far for teaching three-number TEN without hints. It naturally creates an early 3-number phase and gradually introduces fast pair shortcuts. However, the current five-level cadence reaches the full 1–9 pool too quickly if the product goal is long-form mastery/retention. v0.6.3 remains **NOT FROZEN** pending progression pacing and human-feel validation.
+
+
+### v0.6.3 — Number Unlock Progression Diagnostic
+
+Implemented progression:
+- Level 1: Numberlings 1–5.
+- Level 2: unlock 6.
+- Level 3: unlock 7.
+- Level 4: unlock 8.
+- Level 5: unlock 9.
+- Fair-Bag is generated only from the currently unlocked pool.
+- Queue and bag are flushed at level transition so locked numbers cannot leak from a previous pool.
+- No hint, complement recommendation, rescue, or altered TEN validity was added.
+
+Smoke Gate #101: **PASS** across syntax, adversarial gameplay, deliberate-vs-spam simulation, static entrypoint, and invariants.
+
+Matched 100-seed diagnostic by unlock stage:
+- L1 1–5: deliberate TEN-3 27.09/100 vs spam 23.98; deliberate TEN-3 share 99.11%.
+- L2 1–6: deliberate TEN-3 28.92/100 vs spam 25.48; deliberate TEN-3 share 83.60%.
+- L3 1–7: deliberate TEN-3 19.82/100 vs spam 19.76; deliberate TEN-3 share 50.31%.
+- L4 1–8: deliberate TEN-3 11.41/100 vs spam 14.15; deliberate TEN-3 share 26.92%.
+- L5 1–9: deliberate TEN-3 2.26/100 vs spam 9.88; deliberate TEN-3 share 4.83%.
+
+Interpretation:
+- Unlock progression successfully creates an organic learning arc: early game strongly teaches three-number TEN construction, middle game transitions toward mixed 2/3-number strategy, and late game introduces increasingly efficient complementary pairs.
+- This is the first experiment where deliberate play beats spam on three-number TEN frequency in the intended early teaching stages without auto-hints.
+- The remaining weakness is CHAIN intentionality: deliberate CHAIN×2+ remains near zero while spam generates incidental cascades. Do not disturb the successful unlock progression while solving this separately.
+- v0.6.3 Number Unlock Progression is **PROMISING / PROVISIONALLY KEEP**, but overall Core DNA remains **NOT FROZEN** until chain skill and human feel are validated.
