@@ -299,3 +299,10 @@ test("intentionality contract exposes no runtime landing-answer helper",()=>{
  const fs=require("node:fs"),src=fs.readFileSync(require("node:path").join(__dirname,"../js/game.js"),"utf8");
  assert.equal(src.includes("plannedLandingCells"),false);assert.equal(src.includes("chain-ready"),false);
 });
+
+test("LAB telemetry is read-only and contains no move recommendation",()=>{
+ const fs=require("node:fs"),src=fs.readFileSync(require("node:path").join(__dirname,"../js/game.js"),"utf8");
+ assert.ok(src.includes("TenDropTelemetry"));
+ assert.equal(src.includes("plannedLandingCells"),false);
+ assert.equal(src.includes("recommendedColumn"),false);
+});
