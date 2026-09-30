@@ -51,14 +51,16 @@ function gravity(board){
   return board;
 }
 
+function groupBaseScore(group){return group.length===3?180:100}
+
 function resolveBoard(input){
   const board=input.map(r=>r.slice());let chain=0,score=0,tens=0,clears=0,waves=[];
-  while(true){const wave=matchWave(board);if(!wave.cells.length)break;chain++;tens+=wave.groups.length;clears+=wave.cells.length;score+=wave.groups.length*100*chain;waves.push({groups:wave.groups.length,pairs:wave.pairs.length,cells:wave.cells.length,sizes:wave.groups.map(g=>g.length)});for(const [r,c] of wave.cells)board[r][c]=0;gravity(board)}
+  while(true){const wave=matchWave(board);if(!wave.cells.length)break;chain++;tens+=wave.groups.length;clears+=wave.cells.length;score+=wave.groups.reduce((n,g)=>n+groupBaseScore(g),0)*chain;waves.push({groups:wave.groups.length,pairs:wave.pairs.length,cells:wave.cells.length,sizes:wave.groups.map(g=>g.length)});for(const [r,c] of wave.cells)board[r][c]=0;gravity(board)}
   return {board,chain,score,tens,clears,waves};
 }
 
 function shuffledBag(random=Math.random){const bag=Array.from({length:9},(_,i)=>i+1);for(let i=bag.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]]}return bag}
 function canSpawn(board,col=Math.floor(board[0].length/2)){return board[0][col]===0}
-const api={makeBoard,tenCandidates,selectTenGroups,matchWave,gravity,resolveBoard,shuffledBag,canSpawn};
+const api={makeBoard,tenCandidates,selectTenGroups,matchWave,gravity,resolveBoard,groupBaseScore,shuffledBag,canSpawn};
 if(typeof module!=="undefined")module.exports=api;
 if(typeof window!=="undefined")window.TenDropCore=api;
