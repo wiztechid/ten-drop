@@ -42,3 +42,12 @@
 - Smoke Gate #67 passed.
 - Published isolated `preview-v0.6.1/`; production root remains unchanged.
 - v0.6.1 remains experimental and unmerged pending gameplay feel validation.
+
+
+## 2026-09-30 — v0.6.4 Human Discoverability Instrumentation
+- Added passive first-CHAIN and post-discovery CHAIN telemetry.
+- Added per-event level/depth capture and clean-session telemetry reset.
+- Added adversarial guard preventing hint/recommendation leakage.
+- Smoke Gate #109: **PASS**.
+- Runtime rules/physics and Number Unlock Progression unchanged.
+- Core DNA remains NOT FROZEN pending human behavioral validation.
