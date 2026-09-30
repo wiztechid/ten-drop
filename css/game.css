@@ -15,3 +15,19 @@ header{height:58px;display:flex;align-items:center;justify-content:space-between
 /* v0.3.1 preview containment hard-fix: preview pieces must never inherit board absolute layout */
 .preview>div{position:relative!important;display:grid!important;place-items:center!important;width:34px!important;height:34px!important;flex:0 0 34px!important;overflow:visible}
 .preview .blob.mini{position:relative!important;inset:unset!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;display:flex!important;width:32px!important;height:32px!important;margin:0!important;transform:none;font-size:18px}
+
+/* v0.4 engagement gimmick feedback — mechanics-first, no visual redesign */
+.stage.fusion-hit .board{animation:fusionPulse .28s ease-out}
+.stage.fever-hit .board{animation:feverPulse .55s ease-out}
+.stage.last-drop .board{animation:lastDropPulse .55s ease-in-out infinite alternate}
+@keyframes fusionPulse{50%{transform:scale(1.012);filter:brightness(1.18)}}
+@keyframes feverPulse{35%{transform:scale(1.018);filter:brightness(1.32) saturate(1.35)}}
+@keyframes lastDropPulse{to{filter:brightness(1.16);box-shadow:inset 0 0 35px #0005,0 0 28px #ff625f55,0 20px 45px #0005}}
+
+/* v0.5 signature gameplay */
+.fever-badge{width:max-content;margin:3px auto 0;padding:5px 10px;border-radius:999px;background:#ffe45c;color:#322900;font-size:11px;font-weight:1000;letter-spacing:.05em;box-shadow:0 0 18px #ffe45c55}.fever-badge.hidden{visibility:hidden}
+.entry-piece{position:absolute;z-index:18;top:-8px;left:0;width:calc((100% - 10px)/6);height:54px;pointer-events:none;display:none;transition:left .08s}.entry-piece.show{display:block}.entry-piece .blob{inset:4px}
+.fusion-ten{position:absolute;z-index:19;left:50%;top:48%;transform:translate(-50%,-50%) scale(.3);font-size:42px;font-weight:1000;color:#ffe45c;opacity:0;pointer-events:none;text-shadow:0 5px 12px #000}.fusion-ten.show{animation:fusionTen .3s ease-out}
+.cell.chain-ready{box-shadow:inset 0 0 0 1px #ffe45c55}.cell.safe-entry{box-shadow:inset 0 0 0 2px #5ef2c288;background:#5ef2c20c}
+.stage.warning .board{box-shadow:inset 0 0 35px #0005,0 0 20px #ffbd3233,0 20px 45px #0005}.stage.critical .board{box-shadow:inset 0 0 35px #0005,0 0 28px #ff625f66,0 20px 45px #0005}
+@keyframes fusionTen{0%{opacity:0;transform:translate(-50%,-50%) scale(.25)}35%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}100%{opacity:0;transform:translate(-50%,-55%) scale(.9)}}

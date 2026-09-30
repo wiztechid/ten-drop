@@ -1,0 +1,33 @@
+name: TEN DROP v0.4 Preview Artifact
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - engagement-gimmick-v0.4
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax and adversarial gate
+        run: |
+          node --check js/core.js
+          node --check js/game.js
+          node --check tests/adversarial-gameplay.test.js
+          node tests/adversarial-gameplay.test.js
+      - name: Package isolated v0.4 preview
+        run: |
+          mkdir -p preview
+          cp index.html preview/
+          cp -r css js preview/
+          printf "TEN DROP v0.4 experimental preview\nCommit: %s\n" "$GITHUB_SHA" > preview/PREVIEW-BUILD.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ten-drop-v0.4-preview
+          path: preview
+          retention-days: 14
