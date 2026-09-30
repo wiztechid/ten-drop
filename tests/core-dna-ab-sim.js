@@ -44,4 +44,3 @@ const progression=[];
 for(let level=0;level<5;level++){const d=[],sp=[];for(let seed=1;seed<=RUNS;seed++){d.push(run(seed,"deliberate",level));sp.push(run(seed,"spam",level))}progression.push({level:level+1,pool:Core.unlockedPool(level),deliberate:report(d),spam:report(sp)})}
 console.log("UNLOCK_PROGRESSION",JSON.stringify(progression));
 
-for(const maxNumber of [5,6,7,8,9]){const c=cohort(maxNumber),dd=report(c.D),ss=report(c.S);console.log("UNLOCK_STAGE",JSON.stringify({maxNumber,deliberate:dd,spam:ss,signal:{survival:dd.avgDrops>ss.avgDrops,ten3Skill:dd.ten3Per100>ss.ten3Per100,chainSkill:dd.chain2Per100>ss.chain2Per100}}))}
