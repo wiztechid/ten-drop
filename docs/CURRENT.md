@@ -324,3 +324,24 @@ Observed:
 Interpretation: v0.6.1 currently demonstrates strategic value in deliberate placement overall, but does **not yet demonstrate that the 3-number rule or CHAIN is itself intentional skill expression**. Three-number TENs may currently function more as incidental board-resolution events than planned constructions. Therefore v0.6.1 remains **NOT FROZEN as Core DNA**.
 
 Do not solve this with auto-hints. The next design experiment should test incentive/board-rule changes that make preserving/building a 3-number TEN strategically worthwhile while retaining player inference. Any such change requires a separate experimental revision and matched diagnostic before human feel validation.
+
+
+### v0.6.2 — Three-TEN Incentive Experiment
+
+Hypothesis: three-number TENs require more setup/board commitment than immediate pairs, so reward them without making them easier or revealing how to build them.
+
+Change:
+- 2-number TEN base score remains 100.
+- 3-number TEN base score = 180 (1.8×).
+- Cascade multiplier remains multiplicative after the group base score.
+- Validity, 2–3 cap, orthogonal connectivity, resolver, Fair-Bag, NOW+NEXT+NEXT and no-hint contract are unchanged.
+- No power-up, rescue, area clear, complement hint, or recommended placement was added.
+
+Smoke Gate #89: **PASS** including adversarial scoring/cascade semantics and matched-seed diagnostic.
+
+Diagnostic after reward (100 paired seeds):
+- Deliberate: avg drops 180.0; TEN-2 44.53/100; TEN-3 2.26/100; CHAIN×2+ 0.06/100; score 4865.3/100.
+- Spam: avg drops 165.7; TEN-2 19.50/100; TEN-3 9.88/100; CHAIN×2+ 2.16/100; score 4119.3/100.
+- Reward increased the economic value of three-number clears but did **not** change their frequency because scoring alone does not alter board physics or player opportunity. Signal remains `survival=true, ten3Skill=false, chainSkill=false`.
+
+Decision: score incentive alone is insufficient to establish three-number TEN as Core DNA skill expression. Keep v0.6.2 experimental / **NOT FROZEN**. Do not escalate the reward blindly; next experiment should change the strategic opportunity/cost structure, not merely points.
