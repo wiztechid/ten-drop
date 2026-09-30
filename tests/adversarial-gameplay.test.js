@@ -7,8 +7,8 @@ function test(name,fn){try{fn();passed++;console.log("PASS",name)}catch(e){conso
 // 1. shared-cell multi-pair: 9-1-9 = two edges, three cells.
 test("9-1-9 counts 2 Tens but clears 3 unique cells",()=>{
  const b=makeBoard();b[8][1]=9;b[8][2]=1;b[8][3]=9;
- const w=matchWave(b);assert.equal(w.pairs.length,2);assert.equal(w.cells.length,3);
- const r=resolveBoard(b);assert.equal(r.tens,2);assert.equal(r.clears,3);assert.equal(r.score,200);
+ const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.cells.length,2);
+ const r=resolveBoard(b);assert.equal(r.tens,1);assert.equal(r.clears,2);assert.equal(r.score,100);
 });
 
 // 2. simultaneous disjoint pairs.
@@ -23,7 +23,7 @@ test("gravity can create deterministic chain x2",()=>{
  b[8][0]=4;b[8][1]=6; // wave 1 support pair
  b[7][0]=1;b[6][1]=9; // initially diagonal; both fall to bottom after wave 1
  const r=resolveBoard(b);
- assert.equal(r.chain,2);assert.deepEqual(r.waves.map(x=>x.pairs),[1,1]);assert.equal(r.score,300);
+ assert.equal(r.chain,2);assert.deepEqual(r.waves.map(x=>x.groups),[1,1]);assert.equal(r.score,300);
 });
 
 // 4. deterministic chain x3: each wave exposes the next staggered complement layer.
@@ -35,7 +35,7 @@ test("cascade multiplier advances across three waves",()=>{
  b[7][1]=4;
  b[8][2]=6;b[8][3]=5;
  const r=resolveBoard(b);
- assert.equal(r.chain,3);assert.deepEqual(r.waves.map(x=>x.pairs),[1,1,1]);assert.equal(r.score,600);
+ assert.equal(r.chain,3);assert.deepEqual(r.waves.map(x=>x.groups),[1,1,1]);assert.equal(r.score,600);
 });
 
 // 5. gravity order.
@@ -217,5 +217,32 @@ test("NOW planning cue can identify a legal landing that immediately makes 10 wi
 
 test("v0.5 feedback does not alter fair-bag or Make-10 semantics",()=>{
  const bag=shuffledBag(()=>0.25);assert.deepEqual([...bag].sort((a,b)=>a-b),[1,2,3,4,5,6,7,8,9]);
- const b=makeBoard();b[8][0]=4;b[8][1]=6;const w=matchWave(b);assert.equal(w.pairs.length,1);
+ const b=makeBoard();b[8][0]=4;b[8][1]=6;const w=matchWave(b);assert.equal(w.groups.length,1);
+});
+
+
+// v0.6 Group-to-10 core contracts
+test("connected 3-number group summing exactly 10 clears as one TEN",()=>{
+ const b=makeBoard();b[8][0]=2;b[8][1]=3;b[8][2]=5;
+ const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.groups[0].length,3);assert.equal(w.cells.length,3);
+});
+test("connected 4-number group summing exactly 10 clears as one TEN",()=>{
+ const b=makeBoard();b[8][0]=1;b[8][1]=2;b[8][2]=3;b[8][3]=4;
+ const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.groups[0].length,4);assert.equal(w.cells.length,4);
+});
+test("connected group over 10 is invalid and does not clear",()=>{
+ const b=makeBoard();b[8][0]=4;b[8][1]=3;b[8][2]=5;
+ const w=matchWave(b);assert.equal(w.groups.length,0);assert.equal(w.cells.length,0);
+});
+test("diagonal-only numbers are not a connected TEN",()=>{
+ const b=makeBoard();b[8][0]=2;b[7][1]=3;b[6][2]=5;
+ assert.equal(matchWave(b).groups.length,0);
+});
+test("overlapping candidates never spend one Numberling twice in a wave",()=>{
+ const b=makeBoard();b[8][0]=9;b[8][1]=1;b[8][2]=9;
+ const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.cells.length,2);
+});
+test("resolver prefers maximum non-overlapping cleared-cell coverage deterministically",()=>{
+ const b=makeBoard();b[8][0]=1;b[8][1]=9;b[8][3]=2;b[8][4]=3;b[8][5]=5;
+ const a=matchWave(b),z=matchWave(b);assert.equal(a.groups.length,2);assert.equal(a.cells.length,5);assert.deepEqual(a,z);
 });
