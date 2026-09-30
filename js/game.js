@@ -1,7 +1,7 @@
 (()=>{"use strict";
 const COLS=6,ROWS=9,EMPTY=0;
 const Core=window.TenDropCore;
-const {groupBaseScore,unlockedMaxForLevel}=Core;\nconst {groupBaseScore}=Core;
+const {groupBaseScore}=Core;
 const colors=n=>"n"+n;
 const levels=[
  {type:"tens",target:5,label:"Make 5 Tens"},
