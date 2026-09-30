@@ -345,3 +345,33 @@ Diagnostic after reward (100 paired seeds):
 - Reward increased the economic value of three-number clears but did **not** change their frequency because scoring alone does not alter board physics or player opportunity. Signal remains `survival=true, ten3Skill=false, chainSkill=false`.
 
 Decision: score incentive alone is insufficient to establish three-number TEN as Core DNA skill expression. Keep v0.6.2 experimental / **NOT FROZEN**. Do not escalate the reward blindly; next experiment should change the strategic opportunity/cost structure, not merely points.
+
+
+### v0.6.3 — Number Unlock Progression — Engine Result
+
+Implemented experimental chapter progression:
+- Level 1 pool: 1–5.
+- Level 2: unlock 6.
+- Level 3: unlock 7.
+- Level 4: unlock 8.
+- Level 5: unlock 9.
+- Each level uses a fair shuffled bag containing exactly one copy of every currently unlocked Numberling.
+- Level transition flushes both queue and bag, preventing locked-number leakage across checkpoints.
+- Exact-10, max-three, orthogonal, deterministic overlap and no-hint contracts remain unchanged.
+
+Adversarial coverage verifies exact pools and no locked Numberling can leak through Fair-Bag. Smoke Gate #98: **PASS**.
+
+Matched-seed diagnostic (100 deliberate + 100 spam sessions per level, max 180 drops):
+- L1 1–5: deliberate TEN-3 27.09/100 vs spam 23.98; TEN-3 share 99.11% vs 94.93%.
+- L2 1–6: deliberate TEN-3 28.92 vs spam 25.48; share 83.60% vs 78.05%.
+- L3 1–7: deliberate TEN-3 19.82 vs spam 19.76; effectively parity.
+- L4 1–8: deliberate TEN-3 11.41 vs spam 14.15; advantage reverses.
+- L5 1–9: deliberate TEN-3 2.26 vs spam 9.88; pair optimization dominates deliberate policy.
+
+Interpretation:
+- The unlock idea **successfully creates intentional three-number play in the early game without hints**. This is the first experiment where deliberate TEN-3 exceeds spam at L1/L2.
+- Unlocking complementary high numbers progressively changes the game's decision space naturally: pair play becomes increasingly available as 6→9 enter.
+- L3 is a transition point; by L4/L5, rational immediate-pair play dominates again.
+- Cascades remain more common in chaotic/spam play across this simple heuristic, so CHAIN skill expression is still unresolved and must not be claimed as solved.
+
+Status: **PROMISING / NOT FROZEN**. Preserve v0.6.3 for human feel validation. Do not add further mechanics before checking whether L1–L5 progression feels like discovery rather than artificial restriction.
