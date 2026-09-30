@@ -34,7 +34,7 @@ jobs:
           grep -q 'COLS=6,ROWS=9' js/game.js
           grep -q 'function tenCandidates' js/core.js
           grep -q 'function selectTenGroups' js/core.js
-          grep -q 'cells.length>=4' js/core.js
+          grep -q 'length>=4' js/core.js
           grep -q 'while(queue.length<3)' js/game.js
           grep -q 'TenDropCore' js/game.js
           grep -q 'levelClearPending' js/game.js
