@@ -1,6 +1,6 @@
 "use strict";
 const assert=require("node:assert/strict");
-const {makeBoard,tenCandidates,selectTenGroups,matchWave,gravity,resolveBoard,shuffledBag,canSpawn}=require("../js/core.js");
+const {makeBoard,tenCandidates,selectTenGroups,matchWave,gravity,resolveBoard,unlockedPool,shuffledBag,canSpawn}=require("../js/core.js");
 let passed=0;
 function test(name,fn){try{fn();passed++;console.log("PASS",name)}catch(e){console.error("FAIL",name);throw e}}
 
@@ -319,4 +319,16 @@ test("level transition flushes old queue and bag before unlock",()=>{
  const fs=require("node:fs"),src=fs.readFileSync(require("node:path").join(__dirname,"../js/game.js"),"utf8");
  assert.ok(src.includes("level++;queue=[];bag=[];progress=0"));
  assert.ok(src.includes("Core.shuffledBag(Math.random,unlockedMaxForLevel(level))"));
+});
+
+test("unlock progression is exactly 1-5 then +6 +7 +8 +9",()=>{
+ assert.deepEqual(unlockedPool(0),[1,2,3,4,5]);
+ assert.deepEqual(unlockedPool(1),[1,2,3,4,5,6]);
+ assert.deepEqual(unlockedPool(2),[1,2,3,4,5,6,7]);
+ assert.deepEqual(unlockedPool(3),[1,2,3,4,5,6,7,8]);
+ assert.deepEqual(unlockedPool(4),[1,2,3,4,5,6,7,8,9]);
+ assert.deepEqual(unlockedPool(99),[1,2,3,4,5,6,7,8,9]);
+});
+test("locked Numberlings cannot leak through a fair bag",()=>{
+ for(let level=0;level<5;level++){const pool=unlockedPool(level),bag=shuffledBag(()=>0.42,pool);assert.equal(bag.length,pool.length);assert.deepEqual([...bag].sort((a,b)=>a-b),pool)}
 });
