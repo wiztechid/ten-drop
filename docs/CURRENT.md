@@ -248,3 +248,20 @@ No RNG rescue, booster, blocker, wildcard, ad, or permanent meta-system is added
 Deep Gimmick QC Pass 2 completed. Smoke Gate #32 PASS on head 408d1f428e3683c80ce997ec7bfeea385f91491e before preview-workflow addition. v0.4 remains experimental and unmerged. An isolated GitHub Actions preview artifact workflow packages the branch after syntax + adversarial tests, without changing the production GitHub Pages source on main.
 
 A/B rule: compare stable v0.3 production against the exact v0.4 artifact build. Evaluate Make-10 satisfaction, intentional pursuit of CHAIN ×3, LAST DROP clutch comprehension, and immediate desire to replay after Game Over. Each gimmick receives KEEP / TUNE / KILL independently; the package is not all-or-nothing.
+
+
+## v0.5 Signature Gameplay — IN DEVELOPMENT
+
+Built from v0.4 synthetic real-browser playtest findings. Scope is deliberately narrow: make the existing identity legible rather than add new power-ups.
+
+Implemented candidate feedback surfaces:
+- TEN FUSION now has a short explicit 10! fusion beat in addition to board pulse.
+- FEVER has persistent remaining-drop HUD and updates on consumption/activation.
+- Existing complementary/near-match cells receive subtle chain-planning emphasis; no automatic move recommendation and no RNG manipulation.
+- Virtual entry piece is visibly rendered above the board, making LAST DROP state spatially understandable.
+- During LAST DROP, actually safe top-row entry columns receive a restrained highlight; player must still move manually.
+- Board top-load escalates warning → critical feedback as stack pressure increases.
+
+Character plan: final Numberling character system begins after v0.5 mechanics/feel contract passes. Character reactions will then bind to idle, fall, near-complement, Fusion, Chain, FEVER, danger, Last Drop/clutch, clear and Game Over states. Do not finalize character art before these state contracts stabilize.
+
+Status: implementation candidate; requires CI/adversarial regression and real-device feel test before any merge/freeze.
