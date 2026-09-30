@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#080d25"><title>Ten Drop — v0.4 Gimmick Prototype</title>
-<link rel="stylesheet" href="css/game.css?v=0.4">
+<meta name="theme-color" content="#080d25"><title>Ten Drop — v0.5 Signature Gameplay</title>
+<link rel="stylesheet" href="css/game.css?v=0.5">
 </head>
 <body>
 <main class="game-shell">
 <header>
-  <div><span class="eyebrow">TEN DROP · LAB v0.4</span><h1>Make 10. Make it rain.</h1></div>
+  <div><span class="eyebrow">TEN DROP · LAB v0.5</span><h1>Make 10. Make it rain.</h1></div>
   <button id="restart" class="icon-btn" aria-label="Restart">↻</button>
 </header>
 <section class="hud">
@@ -16,9 +16,10 @@
   <div class="objective"><span id="levelLabel">LEVEL 1</span><b id="objective">Make 5 Tens</b><div class="bar"><i id="progress"></i></div></div>
   <div class="stat right"><span>BEST</span><b id="best">0</b></div>
 </section>
+<div id="feverBadge" class="fever-badge hidden">FEVER ×2 · <b id="feverCount">0</b></div>
 <section class="preview" aria-label="Number preview"><small>NOW</small><div id="now"></div><small>NEXT</small><div id="next1"></div><div id="next2"></div></section>
 <section id="stage" class="stage">
-  <div id="callout" class="callout"></div>
+  <div id="callout" class="callout"></div><div id="entryPiece" class="entry-piece"></div><div id="fusionTen" class="fusion-ten">10!</div>
   <div id="board" class="board" aria-label="Ten Drop board"></div>
 </section>
 <section class="controls" aria-label="Controls">
@@ -30,5 +31,5 @@
 </main>
 <div id="modal" class="modal hidden"><div class="card"><div class="mascot">10!</div><h2 id="modalTitle">Chapter Clear!</h2><p id="modalText"></p><button id="modalAction">KEEP DROPPING</button></div></div>
 <script src="js/core.js?v=0.3.2"></script>
-<script src="js/game.js?v=0.4"></script>
+<script src="js/game.js?v=0.5"></script>
 </body></html>
