@@ -460,3 +460,26 @@ Matched 100-seed diagnostic by stage:
 Design conclusion: progressive Numberling unlock is materially stronger than score reward alone. It teaches/builds three-number TEN organically in early play without hints. However, the full 1–9 pool still collapses deliberate play toward pairs and cascades remain disproportionately chaotic. v0.6.3 is therefore **PROMISING / NOT FROZEN**.
 
 Next gate: optimize checkpoint pacing and late-pool strategic structure. Preserve 1–5 and 1–6 as strong onboarding candidates; treat 7 as transition; do not assume 8/9 should unlock as quickly as one level each.
+
+
+### v0.6.4 — Intentional Gravity Chain Diagnostic
+
+Smoke Gate #106: **PASS**.
+
+A multi-drop latent-gravity evaluator was added to the diagnostic harness only. It does not change runtime physics and exposes no player hint. It values board states where complementary Numberlings can be brought together after supporting cells are later removed.
+
+Matched 100-seed results, CHAIN×2+ per 100 drops:
+- L1 1–5: setup-aware 0.00 vs spam 1.03.
+- L2 1–6: 0.80 vs 2.33.
+- L3 1–7: 2.70 vs 3.01.
+- L4 1–8: **6.12 vs 2.68** (~2.3× spam).
+- L5 1–9: **7.58 vs 2.16** (~3.5× spam).
+- Setup-aware max chain reached ×6 at L5.
+
+Interpretation:
+- Current gravity physics already supports intentional cascade mastery; no physics modification is justified.
+- Early progression naturally teaches TEN construction. Once 8–9 expand the pool, latent gravity planning becomes a strong skill discriminator.
+- Previous near-zero deliberate CHAIN result was caused by a one-step/myopic decision policy, not absence of strategic opportunity in the engine.
+- Preserve the v0.6.3 unlock progression and existing gravity semantics.
+- **PROVISIONAL CORE DNA:** early TEN-3 learning → mixed midgame → late pair efficiency + multi-drop gravity CHAIN mastery.
+- Overall status remains **NOT FROZEN** pending human discoverability/feel validation. Do not add auto-hints to force discovery.
