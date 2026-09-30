@@ -44,3 +44,25 @@ const progression=[];
 for(let level=0;level<5;level++){const d=[],sp=[];for(let seed=1;seed<=RUNS;seed++){d.push(run(seed,"deliberate",level));sp.push(run(seed,"spam",level))}progression.push({level:level+1,pool:Core.unlockedPool(level),deliberate:report(d),spam:report(sp)})}
 console.log("UNLOCK_PROGRESSION",JSON.stringify(progression));
 
+
+function chainAware(board,n,nexts=[]){
+ let best=null;
+ for(const c of legal(board)){const res=place(board,c,n),f=features(res);
+   const heights=Array.from({length:COLS},(_,cc)=>ROWS-1-landing(res.board,cc)).map(x=>x<0?ROWS:x);
+   const maxH=Math.max(...heights),rough=heights.slice(1).reduce((a,h,i)=>a+Math.abs(h-heights[i]),0);
+   // Same visible information as a player: current piece + truthful NEXT/NEXT. No future oracle.
+   // CHAIN is prioritized over immediate TEN value to test whether current physics permits intentional cascades.
+   const value=Math.max(0,f.chain-1)*250+f.t3*22+f.t2*8+f.clears*2+partialPotential(res.board,nexts)*1.5-maxH*.45-rough*.08;
+   if(!best||value>best.value||(value===best.value&&c<best.c))best={c,value};
+ }
+ return best?.c??-1;
+}
+function runChainAware(seed,level=4){let board=Core.makeBoard(ROWS,COLS),seq=sequence(seed,MAX_DROPS+3,level);
+ let m={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,score:0};
+ for(let i=0;i<MAX_DROPS;i++){if(!legal(board).length)break;const c=chainAware(board,seq[i],[seq[i+1],seq[i+2]]);if(c<0)break;
+  const res=place(board,c,seq[i]),f=features(res);board=res.board;m.drops++;m.tens2+=f.t2;m.tens3+=f.t3;m.score+=f.score;if(f.chain>=2)m.chains2++;if(f.chain>=3)m.chains3++;m.maxChain=Math.max(m.maxChain,f.chain);
+ }return m;
+}
+const chainOpportunity=[];
+for(let level=0;level<5;level++){const ca=[],sp=[];for(let seed=1;seed<=RUNS;seed++){ca.push(runChainAware(seed,level));sp.push(run(seed,"spam",level))}chainOpportunity.push({level:level+1,pool:Core.unlockedPool(level),chainAware:report(ca),spam:report(sp)})}
+console.log("CHAIN_OPPORTUNITY",JSON.stringify(chainOpportunity));
