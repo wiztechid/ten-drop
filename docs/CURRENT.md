@@ -265,3 +265,36 @@ Implemented candidate feedback surfaces:
 Character plan: final Numberling character system begins after v0.5 mechanics/feel contract passes. Character reactions will then bind to idle, fall, near-complement, Fusion, Chain, FEVER, danger, Last Drop/clutch, clear and Game Over states. Do not finalize character art before these state contracts stabilize.
 
 Status: implementation candidate; requires CI/adversarial regression and real-device feel test before any merge/freeze.
+
+
+## v0.6.1 Group-to-10 — Intentional Puzzle Contract — 2026-09-30
+
+Experimental branch: `group-to-10-v0.6`. Draft PR #6 remains unmerged; stable production is unchanged.
+
+Approved core experiment:
+- A TEN is an orthogonally connected group of exactly **2 or 3 Numberlings** whose values total exactly 10.
+- Four-number groups are invalid even when their total is 10.
+- Groups over 10 do not clear and carry no penalty.
+- Diagonal-only connectivity is invalid.
+- A Numberling cannot be consumed by two TEN groups in the same resolution wave.
+- Overlapping candidates are resolved deterministically by maximum non-overlapping cleared-cell coverage with deterministic tie-breaking.
+- One resolved 2- or 3-number group counts as one TEN for objectives/scoring.
+- Gravity and subsequent exact-10 groups continue to create cascade waves.
+- Fair-Bag and truthful NOW + NEXT + NEXT remain unchanged.
+
+Intentionality rule:
+- The game must make the player think; it must not reveal the answer.
+- No partial-sum hint, needed-number/complement hint, recommended-column hint, prospective-gravity hint, or prospective-chain hint.
+- The prior `plannedLandingCells` / `chain-ready` landing-answer cue has been removed.
+- CHAIN remains a skill reward that the player must infer from board geometry and gravity.
+
+Deep QC:
+- Covered L-shape three-number TEN, four-cell T rejection, >10, diagonal rejection, larger connected components with valid 3-cell subsets, overlapping groups, deterministic resolver ties, anti-double-spend, score laundering, 3-number cascade, and dense-board candidate enumeration.
+- Initial dense 6×9 enumeration exposed a performance defect (~256.1 ms in CI); candidate search was refactored to canonical memoized connected-set expansion.
+- Smoke Gate #67: **PASS** for JavaScript syntax, adversarial engine, static entrypoint, and core invariants.
+
+Preview:
+- Isolated `preview-v0.6.1/` snapshot has been published to `main` without modifying stable root gameplay.
+- First deployment check returned 404 while GitHub Pages was propagating; LIVE status must be verified before playtest.
+
+Freeze status: **NOT FROZEN**. Next gate is a comparable gameplay feel test asking whether players intentionally build 3-number TENs and engineer gravity CHAINs without hints.
