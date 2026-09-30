@@ -306,3 +306,17 @@ test("LAB telemetry is read-only and contains no move recommendation",()=>{
  assert.equal(src.includes("plannedLandingCells"),false);
  assert.equal(src.includes("recommendedColumn"),false);
 });
+
+test("v0.6.3 unlock schedule is exactly 1-5 then 6 7 8 9",()=>{
+ const {unlockedMaxForLevel}=require("../js/core.js");
+ assert.deepEqual([0,1,2,3,4].map(unlockedMaxForLevel),[5,6,7,8,9]);
+});
+test("Fair-Bag cannot leak locked Numberlings",()=>{
+ const {shuffledBag}=require("../js/core.js");
+ for(let max=5;max<=9;max++){const b=shuffledBag(()=>0.314159,max);assert.equal(b.length,max);assert.deepEqual([...b].sort((a,b)=>a-b),Array.from({length:max},(_,i)=>i+1));}
+});
+test("level transition flushes old queue and bag before unlock",()=>{
+ const fs=require("node:fs"),src=fs.readFileSync(require("node:path").join(__dirname,"../js/game.js"),"utf8");
+ assert.ok(src.includes("level++;queue=[];bag=[];progress=0"));
+ assert.ok(src.includes("Core.shuffledBag(Math.random,unlockedMaxForLevel(level))"));
+});
