@@ -59,8 +59,9 @@ function resolveBoard(input){
   return {board,chain,score,tens,clears,waves};
 }
 
-function shuffledBag(random=Math.random){const bag=Array.from({length:9},(_,i)=>i+1);for(let i=bag.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]]}return bag}
+function unlockedPool(level=0){const max=Math.min(9,5+Math.max(0,level));return Array.from({length:max},(_,i)=>i+1)}
+function shuffledBag(random=Math.random,pool=unlockedPool(4)){const bag=[...pool];for(let i=bag.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]]}return bag}
 function canSpawn(board,col=Math.floor(board[0].length/2)){return board[0][col]===0}
-const api={makeBoard,tenCandidates,selectTenGroups,matchWave,gravity,resolveBoard,groupBaseScore,shuffledBag,canSpawn};
+const api={makeBoard,tenCandidates,selectTenGroups,matchWave,gravity,resolveBoard,groupBaseScore,unlockedPool,shuffledBag,canSpawn};
 if(typeof module!=="undefined")module.exports=api;
 if(typeof window!=="undefined")window.TenDropCore=api;
