@@ -433,3 +433,30 @@ Interpretation:
 - This is the first experiment where deliberate play beats spam on three-number TEN frequency in the intended early teaching stages without auto-hints.
 - The remaining weakness is CHAIN intentionality: deliberate CHAIN×2+ remains near zero while spam generates incidental cascades. Do not disturb the successful unlock progression while solving this separately.
 - v0.6.3 Number Unlock Progression is **PROMISING / PROVISIONALLY KEEP**, but overall Core DNA remains **NOT FROZEN** until chain skill and human feel are validated.
+
+
+### v0.6.3 Number Unlock Progression — Engine Gate
+
+Implemented progression:
+- Level 1: Numberlings 1–5
+- Level 2: unlock 6
+- Level 3: unlock 7
+- Level 4: unlock 8
+- Level 5: unlock 9
+- Fair-Bag is generated only from the active pool.
+- Level transition flushes queue + bag so locked/unlocked values cannot leak across the boundary.
+- No auto-hint or complement guidance added.
+- UI exposes the current numeric pool in the level label.
+
+Adversarial coverage verifies exact unlock schedule, Fair-Bag containment, and transition queue/bag flushing. Smoke Gate #101: **PASS**.
+
+Matched 100-seed diagnostic by stage:
+- 1–5: deliberate TEN-3 27.09/100 vs spam 23.98; TEN-3 share 99.11% vs 94.93%. First stage where three-number TEN is skill-positive.
+- 1–6: deliberate TEN-3 28.92 vs spam 25.48; still skill-positive.
+- 1–7: 19.82 vs 19.76; effectively neutral.
+- 1–8: 11.41 vs 14.15; becomes spam-positive.
+- 1–9: 2.26 vs 9.88; strongly spam-positive as deliberate policy rationally prefers easy pairs.
+
+Design conclusion: progressive Numberling unlock is materially stronger than score reward alone. It teaches/builds three-number TEN organically in early play without hints. However, the full 1–9 pool still collapses deliberate play toward pairs and cascades remain disproportionately chaotic. v0.6.3 is therefore **PROMISING / NOT FROZEN**.
+
+Next gate: optimize checkpoint pacing and late-pool strategic structure. Preserve 1–5 and 1–6 as strong onboarding candidates; treat 7 as transition; do not assume 8/9 should unlock as quickly as one level each.
