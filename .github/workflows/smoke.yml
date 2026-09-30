@@ -20,7 +20,9 @@ jobs:
           node --check js/core.js
           node --check tests/adversarial-gameplay.test.js
           node tests/adversarial-gameplay.test.js
-      - name: Core DNA deliberate vs spam simulation\n        run: node tests/core-dna-ab-sim.js\n      - name: Static entrypoint
+      - name: Core DNA deliberate vs spam simulation
+        run: node tests/core-dna-ab-sim.js
+      - name: Static entrypoint
         run: |
           test -s index.html
           test -s css/game.css
