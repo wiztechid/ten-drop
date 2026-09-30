@@ -375,3 +375,33 @@ Interpretation:
 - Cascades remain more common in chaotic/spam play across this simple heuristic, so CHAIN skill expression is still unresolved and must not be claimed as solved.
 
 Status: **PROMISING / NOT FROZEN**. Preserve v0.6.3 for human feel validation. Do not add further mechanics before checking whether L1–L5 progression feels like discovery rather than artificial restriction.
+
+
+### v0.6.3 — Number Unlock Progression — 2026-09-30
+
+Implemented experimental progression:
+- Level 1: Numberlings 1–5
+- Level 2: unlock 6
+- Level 3: unlock 7
+- Level 4: unlock 8
+- Level 5: unlock 9
+- Fair-Bag is generated only from the active level pool.
+- Level transition flushes queue + bag before the new pool is used, preventing locked-number leakage.
+- Retry preserves the current level/pool; chapter reset returns to 1–5.
+- HUD exposes the current range; no arithmetic/complement/placement hint was added.
+- v0.6.2 scoring experiment remains: pair base 100, three-number TEN base 180.
+
+Adversarial coverage now verifies exact unlock schedule, Fair-Bag pool integrity, and queue/bag flush at level transition.
+
+Smoke Gate #101: **PASS** — syntax, adversarial gameplay, Core DNA simulation, static entrypoint, and gameplay invariants.
+
+Matched-seed diagnostic by unlock stage (100 deliberate + 100 spam sessions per stage):
+- 1–5: deliberate TEN-3 27.09/100 drops vs spam 23.98; TEN-3 share 99.11% vs 94.93%. First positive three-number skill signal.
+- 1–6: deliberate TEN-3 28.92 vs spam 25.48; TEN-3 share 83.60% vs 78.05%. Positive three-number skill signal remains.
+- 1–7: deliberate TEN-3 19.82 vs spam 19.76; essentially neutral.
+- 1–8: deliberate TEN-3 11.41 vs spam 14.15; signal reverses.
+- 1–9: deliberate TEN-3 2.26 vs spam 9.88; pair strategy dominates deliberate play.
+
+Important: CHAIN remains much more frequent in spam across all stages, so Number Unlock Progression improves intentional three-number construction early but does **not** solve intentional cascade skill.
+
+Interpretation: staged unlock is the strongest experiment so far for teaching three-number TEN without hints. It naturally creates an early 3-number phase and gradually introduces fast pair shortcuts. However, the current five-level cadence reaches the full 1–9 pool too quickly if the product goal is long-form mastery/retention. v0.6.3 remains **NOT FROZEN** pending progression pacing and human-feel validation.
