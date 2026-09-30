@@ -273,9 +273,9 @@ test("multiple overlapping candidates cannot inflate TEN count or cleared cells"
  const b=makeBoard();b[8][1]=1;b[8][0]=9;b[8][2]=9;b[7][1]=9;
  const w=matchWave(b);assert.equal(w.groups.length,1);assert.equal(w.cells.length,2);
 });
-test("3-number group scores as one TEN, not three pair-equivalents",()=>{
+test("3-number group remains one TEN and earns v0.6.2 skill reward",()=>{
  const b=makeBoard();b[8][0]=2;b[8][1]=3;b[8][2]=5;
- const r=resolveBoard(b);assert.equal(r.tens,1);assert.equal(r.clears,3);assert.equal(r.score,100);
+ const r=resolveBoard(b);assert.equal(r.tens,1);assert.equal(r.clears,3);assert.equal(r.score,180);
 });
 test("four-number exact 10 cannot launder score",()=>{
  const b=makeBoard();b[8][0]=1;b[8][1]=2;b[8][2]=3;b[8][3]=4;
