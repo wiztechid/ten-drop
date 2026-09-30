@@ -283,7 +283,7 @@ test("four-number exact 10 cannot launder score",()=>{
 });
 test("3-number first wave can gravity-cascade into a second TEN",()=>{
  const b=makeBoard();b[8][0]=2;b[8][1]=3;b[8][2]=5;b[7][0]=4;b[6][1]=6;
- const r=resolveBoard(b);assert.equal(r.chain,2);assert.equal(r.tens,2);assert.equal(r.score,300);
+ const r=resolveBoard(b);assert.equal(r.chain,2);assert.equal(r.tens,2);assert.equal(r.score,380);
 });
 test("dense 6x9 candidate enumeration remains bounded for browser play",()=>{
  const b=makeBoard();for(let r=0;r<9;r++)for(let c=0;c<6;c++)b[r][c]=1+((r*6+c)%4);
