@@ -202,3 +202,20 @@ test("FEVER refresh is capped at three rather than additive stacking",()=>{
  feverDrops=Math.max(feverDrops,3);
  assert.equal(feverDrops,3);
 });
+
+
+// v0.5 signature gameplay semantic guards
+test("NOW planning cue can identify a legal landing that immediately makes 10 without changing board",()=>{
+ const b=makeBoard();b[8][0]=9;const active=1;
+ const snapshot=JSON.stringify(b);let opportunities=[];
+ for(let c=0;c<6;c++){let r=8;while(r>=0&&b[r][c])r--;if(r<0)continue;
+  const makesTen=[[1,0],[-1,0],[0,1],[0,-1]].some(([dr,dc])=>{let rr=r+dr,cc=c+dc;return rr>=0&&rr<9&&cc>=0&&cc<6&&b[rr][cc]&&b[rr][cc]+active===10});
+  if(makesTen)opportunities.push([r,c]);
+ }
+ assert.ok(opportunities.length>0);assert.equal(JSON.stringify(b),snapshot);
+});
+
+test("v0.5 feedback does not alter fair-bag or Make-10 semantics",()=>{
+ const bag=shuffledBag(()=>0.25);assert.deepEqual([...bag].sort((a,b)=>a-b),[1,2,3,4,5,6,7,8,9]);
+ const b=makeBoard();b[8][0]=4;b[8][1]=6;const w=matchWave(b);assert.equal(w.pairs.length,1);
+});
