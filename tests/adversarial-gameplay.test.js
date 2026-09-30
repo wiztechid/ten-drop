@@ -318,3 +318,14 @@ test("unlock progression is exactly 1-5 then +6 +7 +8 +9",()=>{
 test("locked Numberlings cannot leak through a fair bag",()=>{
  for(let level=0;level<5;level++){const pool=unlockedPool(level),bag=shuffledBag(()=>0.42,pool);assert.equal(bag.length,pool.length);assert.deepEqual([...bag].sort((a,b)=>a-b),pool)}
 });
+
+test("human discoverability telemetry is passive and exposes no chain answer",()=>{
+ const fs=require("node:fs"),src=fs.readFileSync(require("node:path").join(__dirname,"../js/game.js"),"utf8");
+ assert.ok(src.includes("firstChainDrop"));
+ assert.ok(src.includes("chainsAfterFirst"));
+ assert.ok(src.includes("chainEvents"));
+ assert.ok(src.includes("TenDropTelemetryReset"));
+ assert.ok(!src.includes("chainHint"));
+ assert.ok(!src.includes("recommendedChain"));
+ assert.ok(!src.includes("showChainPath"));
+});
