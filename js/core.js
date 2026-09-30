@@ -6,18 +6,20 @@ const key=([r,c])=>r+","+c;
 const cmpCells=(a,b)=>{const aa=a.map(key).sort().join("|"),bb=b.map(key).sort().join("|");return aa.localeCompare(bb)};
 
 function tenCandidates(board){
-  const rows=board.length,cols=board[0].length,out=new Map();
-  function grow(cells,set,sum){
-    if(sum===10&&cells.length>=2){const sorted=[...cells].sort((a,b)=>a[0]-b[0]||a[1]-b[1]);out.set(sorted.map(key).join("|"),sorted);return}
-    if(sum>=10||cells.length>=4)return;
-    const frontier=new Map();
-    for(const [r,c] of cells)for(const [dr,dc] of DIRS){const rr=r+dr,cc=c+dc,k=rr+","+cc;if(rr>=0&&rr<rows&&cc>=0&&cc<cols&&board[rr][cc]&&!set.has(k))frontier.set(k,[rr,cc])}
+  const rows=board.length,cols=board[0].length,out=new Map(),seen=new Set();
+  function canonical(cells){return [...cells].sort((a,b)=>a[0]-b[0]||a[1]-b[1])}
+  function grow(cells,sum){
+    const sorted=canonical(cells),sig=sorted.map(key).join("|");
+    if(seen.has(sig))return;seen.add(sig);
+    if(sum===10&&sorted.length>=2){out.set(sig,sorted);return}
+    if(sum>=10||sorted.length>=4)return;
+    const member=new Set(sorted.map(key)),frontier=new Map();
+    for(const [r,c] of sorted)for(const [dr,dc] of DIRS){const rr=r+dr,cc=c+dc,k=rr+","+cc;if(rr>=0&&rr<rows&&cc>=0&&cc<cols&&board[rr][cc]&&!member.has(k))frontier.set(k,[rr,cc])}
     for(const p of [...frontier.values()].sort((a,b)=>a[0]-b[0]||a[1]-b[1])){
-      const v=board[p[0]][p[1]];if(sum+v>10)continue;
-      const ns=new Set(set);ns.add(key(p));grow([...cells,p],ns,sum+v);
+      const v=board[p[0]][p[1]];if(sum+v<=10)grow([...sorted,p],sum+v);
     }
   }
-  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(board[r][c])grow([[r,c]],new Set([r+","+c]),board[r][c]);
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)if(board[r][c])grow([[r,c]],board[r][c]);
   return [...out.values()].sort((a,b)=>b.length-a.length||cmpCells(a,b));
 }
 
