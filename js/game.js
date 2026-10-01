@@ -10,7 +10,7 @@ const levels=[
  {type:"chain",target:2,label:"Make CHAIN ×2"},
  {type:"tens",target:10,label:"Make 10 Tens"}
 ];
-let telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[]};
+let telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[],sessionRestarts:0};
 let board,active,queue=[],score=0,best=+localStorage.getItem("tenDropBest")||0,level=0,progress=0,levelScoreStart=0,timer=null,fallMs=850,locked=false,bag=[],levelClearPending=false,levelTimer=null,runToken=0,feverDrops=0,lastDropArmed=false,lastDropUsed=false,lastDropTimer=null,gameOverShown=false;
 const $=s=>document.querySelector(s),boardEl=$("#board"),scoreEl=$("#score"),bestEl=$("#best"),callout=$("#callout");
 function makeBoard(){return Array.from({length:ROWS},()=>Array(COLS).fill(EMPTY))}
@@ -48,11 +48,11 @@ function renderEntryPiece(){const el=$("#entryPiece");if(!el)return;el.innerHTML
 function mini(el,n){el.innerHTML="";let b=blob(n);b.classList.add("mini");el.appendChild(b)}
 function renderPreview(){if(active)mini($("#now"),active.n);if(queue[0])mini($("#next1"),queue[0]);if(queue[1])mini($("#next2"),queue[1])}
 function updateHud(){let l=levels[level]||levels[0];$("#levelLabel").textContent="LEVEL "+(level+1)+" · 1–"+unlockedMaxForLevel(level);$("#objective").textContent=l.label;$("#progress").style.width=Math.min(100,(progress/l.target)*100)+"%"}
-$("#left").onclick=()=>move(-1);$("#right").onclick=()=>move(1);$("#drop").onclick=hardDrop;$("#restart").onclick=()=>reset(false);
+$("#left").onclick=()=>move(-1);$("#right").onclick=()=>move(1);$("#drop").onclick=hardDrop;$("#restart").onclick=()=>{if(new URLSearchParams(location.search).has("telemetry"))telemetry.sessionRestarts++;reset(false)};
 document.addEventListener("keydown",e=>{if(e.key==="ArrowLeft")move(-1);if(e.key==="ArrowRight")move(1);if(e.key==="ArrowDown"||e.key===" ")hardDrop()});
 let sx=0,sy=0;boardEl.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});boardEl.addEventListener("touchend",e=>{let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>35&&Math.abs(dx)>Math.abs(dy))move(dx>0?1:-1);else if(dy>45)hardDrop()},{passive:true});
 window.TenDropTelemetry=()=>JSON.parse(JSON.stringify(telemetry));
-window.TenDropTelemetryReset=()=>{telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[]};return window.TenDropTelemetry()};
+window.TenDropTelemetryReset=()=>{telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[],sessionRestarts:0};return window.TenDropTelemetry()};
 function initTelemetryLab(){
  const lab=$("#telemetryLab");if(!lab||!new URLSearchParams(location.search).has("telemetry"))return;
  lab.classList.remove("hidden");const status=$("#telemetryStatus");
