@@ -16,7 +16,11 @@ assert.equal(classify(strong).class,CLASS.STRONG);
 // Duplicate same-drop events must fail closed to emerging rather than manufacture mastery.
 let dup={...strong,chainsAfterFirst:3,chainEvents:[incidental.chainEvents[0],{drop:70,level:4,depth:2},{drop:70,level:4,depth:3},{drop:90,level:5,depth:3}]};
 assert.equal(classify(dup).class,CLASS.EMERGING);
-assert.equal(classify(strong,{automated:true}).class,CLASS.INCOMPLETE);\nassert.equal(classify({...strong,sessionRestarts:1}).class,CLASS.INCOMPLETE);
+assert.equal(classify(strong,{automated:true}).class,CLASS.INCOMPLETE);
+assert.equal(classify({...strong,sessionRestarts:1}).class,CLASS.INCOMPLETE);
+assert.equal(classify({...strong,firstChainDrop:41}).class,CLASS.INCOMPLETE);
+assert.equal(classify({...strong,chains2:99}).class,CLASS.INCOMPLETE);
+assert.equal(classify({...strong,chainEvents:[...strong.chainEvents,{drop:121,level:5,depth:2}],chains2:5,chainsAfterFirst:4}).class,CLASS.INCOMPLETE);
 const c=cohort([classify(strong),classify(deliberate),classify(strong),classify(base),classify(incidental)]);
 assert.equal(c.freezeDirectional,true);
 const weak=cohort([classify(strong),classify(base),classify(base),classify(incidental),classify(emerging)]);
