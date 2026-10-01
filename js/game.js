@@ -53,5 +53,12 @@ document.addEventListener("keydown",e=>{if(e.key==="ArrowLeft")move(-1);if(e.key
 let sx=0,sy=0;boardEl.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});boardEl.addEventListener("touchend",e=>{let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>35&&Math.abs(dx)>Math.abs(dy))move(dx>0?1:-1);else if(dy>45)hardDrop()},{passive:true});
 window.TenDropTelemetry=()=>JSON.parse(JSON.stringify(telemetry));
 window.TenDropTelemetryReset=()=>{telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[]};return window.TenDropTelemetry()};
+function initTelemetryLab(){
+ const lab=$("#telemetryLab");if(!lab||!new URLSearchParams(location.search).has("telemetry"))return;
+ lab.classList.remove("hidden");const status=$("#telemetryStatus");
+ $("#telemetryNew").onclick=()=>{window.TenDropTelemetryReset();reset(true);status.textContent="SESSION RESET · PLAY ≥60 DROPS";};
+ $("#telemetryCopy").onclick=async()=>{const payload=JSON.stringify(window.TenDropTelemetry());try{await navigator.clipboard.writeText(payload);status.textContent="TELEMETRY COPIED";}catch(_){status.textContent=payload;}};
+}
+initTelemetryLab();
 reset(true);
 })();
