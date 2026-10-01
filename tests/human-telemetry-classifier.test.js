@@ -2,8 +2,8 @@
 const assert=require("node:assert/strict");
 const {CLASS,classify,cohort}=require("./human-telemetry-classifier.js");
 const base={drops:100,tens2:10,tens3:8,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[],sessionRestarts:0,dropsByLevel:[30,20,20,15,15]};
-assert.equal(classify({...base,drops:59}).class,CLASS.INCOMPLETE);
-assert.equal(classify({...base,drops:35},{gameOver:true}).class,CLASS.NO_DISCOVERY);
+assert.equal(classify({...base,drops:59,dropsByLevel:[20,10,10,10,9]}).class,CLASS.INCOMPLETE);
+assert.equal(classify({...base,drops:35,dropsByLevel:[15,10,10,0,0]},{gameOver:true}).class,CLASS.NO_DISCOVERY);
 assert.equal(classify(base).class,CLASS.NO_DISCOVERY);
 let incidental={...base,chains2:1,maxChain:2,firstChainDrop:40,chainEvents:[{drop:40,level:3,depth:2}]};
 assert.equal(classify(incidental).class,CLASS.INCIDENTAL);
