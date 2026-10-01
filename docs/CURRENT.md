@@ -1,8 +1,8 @@
 # TEN DROP — CURRENT
 
-**Status:** Playable Web Prototype v0.3 — implementation branch ready for device testing  
-**Last updated:** 2026-09-29  
-**Decision:** GO — playable v0.3 implemented on `prototype-v0.3`; device gameplay QC required before Android production.
+**Status:** Core DNA v0.6.5 — telemetry validation infrastructure GREEN; human cohort pending  
+**Last updated:** 2026-10-01  
+**Decision:** PROVISIONAL CORE DNA — NOT FROZEN. Physics/rules remain unchanged while human discoverability evidence is collected before Character System v0.7.
 
 ## 1. Product Thesis
 
@@ -505,3 +505,23 @@ Guardrails:
 
 Engineering status: **CLOSED / GREEN**.
 Next gate is behavioral human playtesting: determine whether players discover gravity CHAIN unaided and whether CHAIN frequency rises after first discovery. Core DNA remains **NOT FROZEN** until this human-discoverability evidence exists.
+
+
+## v0.6.5 — Human Telemetry Freeze Gate — 2026-10-01
+
+Branch: `group-to-10-v0.6`; draft PR #6 remains unmerged.
+
+Validation infrastructure is now closed/GREEN:
+- `docs/CORE-DNA-HUMAN-TELEMETRY-GATE.md` preregisters the behavioral decision contract.
+- `tests/human-telemetry-classifier.js` classifies valid sessions as NO_DISCOVERY, INCIDENTAL, EMERGING_DISCOVERY, DELIBERATE_SIGNAL, or STRONG_DELIBERATE_SIGNAL.
+- Adversarial tests fail closed on short/incomplete sessions, automation, mutated sessions, duplicate same-drop CHAIN events, and inconsistent repeat accounting.
+- The classifier is enforced by TEN DROP Smoke Gate CI.
+- Smoke Gate #114: **PASS / GREEN** on head `6a663ff20f9572217aa0a495b2f98150f4b25c7b`.
+
+Freeze evidence is deliberately not synthesized. Minimum directional human cohort remains:
+- >=5 valid independent human sessions;
+- >=3 DELIBERATE_SIGNAL or stronger;
+- no evidence that random/spam behavior matches or exceeds the post-discovery repeat pattern;
+- base exact-10 comprehension remains intact.
+
+Current decision: **PROVISIONAL CORE DNA — NOT FROZEN**. Do not alter gravity/rules or add answer hints while collecting this cohort. Character System v0.7 begins only after the Core DNA freeze decision.
