@@ -1,7 +1,7 @@
 "use strict";
 const assert=require("node:assert/strict");
 const {CLASS,classify,cohort}=require("./human-telemetry-classifier.js");
-const base={drops:100,tens2:10,tens3:8,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[]};
+const base={drops:100,tens2:10,tens3:8,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[],sessionRestarts:0};
 assert.equal(classify({...base,drops:59}).class,CLASS.INCOMPLETE);
 assert.equal(classify({...base,drops:35},{gameOver:true}).class,CLASS.NO_DISCOVERY);
 assert.equal(classify(base).class,CLASS.NO_DISCOVERY);
@@ -16,7 +16,7 @@ assert.equal(classify(strong).class,CLASS.STRONG);
 // Duplicate same-drop events must fail closed to emerging rather than manufacture mastery.
 let dup={...strong,chainsAfterFirst:3,chainEvents:[incidental.chainEvents[0],{drop:70,level:4,depth:2},{drop:70,level:4,depth:3},{drop:90,level:5,depth:3}]};
 assert.equal(classify(dup).class,CLASS.EMERGING);
-assert.equal(classify(strong,{automated:true}).class,CLASS.INCOMPLETE);
+assert.equal(classify(strong,{automated:true}).class,CLASS.INCOMPLETE);\nassert.equal(classify({...strong,sessionRestarts:1}).class,CLASS.INCOMPLETE);
 const c=cohort([classify(strong),classify(deliberate),classify(strong),classify(base),classify(incidental)]);
 assert.equal(c.freezeDirectional,true);
 const weak=cohort([classify(strong),classify(base),classify(base),classify(incidental),classify(emerging)]);
