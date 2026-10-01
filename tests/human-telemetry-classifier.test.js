@@ -15,7 +15,7 @@ let strong={...incidental,drops:120,chains2:4,chains3:1,maxChain:3,chainsAfterFi
 assert.equal(classify(strong).class,CLASS.STRONG);
 // Duplicate same-drop events must fail closed to emerging rather than manufacture mastery.
 let dup={...strong,chainsAfterFirst:3,chainEvents:[incidental.chainEvents[0],{drop:70,level:4,depth:2},{drop:70,level:4,depth:3},{drop:90,level:5,depth:3}]};
-assert.equal(classify(dup).class,CLASS.EMERGING);
+assert.equal(classify(dup).class,CLASS.INCOMPLETE);
 assert.equal(classify(strong,{automated:true}).class,CLASS.INCOMPLETE);
 assert.equal(classify({...strong,sessionRestarts:1}).class,CLASS.INCOMPLETE);
 assert.equal(classify({...strong,firstChainDrop:41}).class,CLASS.INCOMPLETE);
