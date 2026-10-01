@@ -14,6 +14,7 @@ Use only `TenDropTelemetry()` fields:
 - firstChainDrop
 - chainsAfterFirst
 - chainEvents [{drop, level, depth}]
+- dropsByLevel [L1, L2, L3, L4, L5] — locked-drop exposure by level; sum must equal `drops`
 
 No board oracle, recommended column, complement hint, future RNG, or player self-report is required for the primary classification.
 
@@ -22,7 +23,8 @@ A session is VALID when:
 1. telemetry was reset before play;
 2. >= 60 locked drops, unless Game Over occurs after >= 30;
 3. no automation/bot input;
-4. no rule/physics/config change during the session.
+4. no rule/physics/config change during the session;
+5. telemetry accounting is internally consistent: per-level exposure sums to total drops, CHAIN events reference exposed levels, and duplicate same-drop CHAIN events are invalid.
 
 Otherwise classify INCOMPLETE and exclude from freeze evidence.
 
