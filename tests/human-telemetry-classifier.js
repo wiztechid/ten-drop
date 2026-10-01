@@ -4,7 +4,7 @@ const CLASS={INCOMPLETE:"INCOMPLETE",NO_DISCOVERY:"NO_DISCOVERY",INCIDENTAL:"INC
 
 function finiteInt(v){return Number.isInteger(v)&&v>=0}
 function validate(t){
- if(!t||typeof t!=="object")return false;
+ if(!t||typeof t!=="object"||!finiteInt(t.sessionRestarts||0)||(t.sessionRestarts||0)>0)return false;
  for(const k of ["drops","tens2","tens3","chains2","chains3","maxChain","chainsAfterFirst"])if(!finiteInt(t[k]))return false;
  if(t.firstChainDrop!==null&&!finiteInt(t.firstChainDrop))return false;
  if(!Array.isArray(t.chainEvents))return false;
