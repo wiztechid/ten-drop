@@ -31,3 +31,6 @@ header{height:58px;display:flex;align-items:center;justify-content:space-between
 .cell.chain-ready{box-shadow:inset 0 0 0 1px #ffe45c55}.cell.safe-entry{box-shadow:inset 0 0 0 2px #5ef2c288;background:#5ef2c20c}
 .stage.warning .board{box-shadow:inset 0 0 35px #0005,0 0 20px #ffbd3233,0 20px 45px #0005}.stage.critical .board{box-shadow:inset 0 0 35px #0005,0 0 28px #ff625f66,0 20px 45px #0005}
 @keyframes fusionTen{0%{opacity:0;transform:translate(-50%,-50%) scale(.25)}35%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}100%{opacity:0;transform:translate(-50%,-55%) scale(.9)}}
+
+/* v0.6.5 human-validation lab: hidden unless ?telemetry=1, no gameplay advice */
+.telemetry-lab{margin:10px 0 2px;padding:9px;border:1px dashed #34466f;border-radius:12px;text-align:center;background:#0d1531cc}.telemetry-lab.hidden{display:none}.telemetry-lab small,.telemetry-lab span{display:block;color:#8794b8;font-size:9px;font-weight:900;letter-spacing:.08em}.telemetry-lab div{display:flex;gap:7px;margin:7px 0}.telemetry-lab button{flex:1;border:1px solid #34466f;border-radius:10px;background:#182447;color:#f8fbff;padding:8px 5px;font-size:9px;font-weight:900}
