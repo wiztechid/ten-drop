@@ -22,6 +22,11 @@ jobs:
           node tests/adversarial-gameplay.test.js
       - name: Core DNA deliberate vs spam simulation
         run: node tests/core-dna-ab-sim.js
+      - name: Human telemetry decision gate
+        run: |
+          node --check tests/human-telemetry-classifier.js
+          node --check tests/human-telemetry-classifier.test.js
+          node tests/human-telemetry-classifier.test.js
       - name: Static entrypoint
         run: |
           test -s index.html
