@@ -1,8 +1,8 @@
 # TEN DROP — CURRENT
 
-**Status:** Playable Web Prototype v0.3 — implementation branch ready for device testing  
-**Last updated:** 2026-09-29  
-**Decision:** GO — playable v0.3 implemented on `prototype-v0.3`; device gameplay QC required before Android production.
+**Status:** Core DNA v0.6.5 — telemetry validation infrastructure GREEN; human cohort pending  
+**Last updated:** 2026-10-01  
+**Decision:** PROVISIONAL CORE DNA — NOT FROZEN. Physics/rules remain unchanged while human discoverability evidence is collected before Character System v0.7.
 
 ## 1. Product Thesis
 
@@ -231,3 +231,297 @@ Three gameplay-friction changes implemented on `friction-audit-v0.3` without cos
 3. Flow: Levels 1–4 use a short non-blocking clear transition (~900 ms); blocking modal remains only for Game Over and Chapter Clear.
 
 Status: **pending CI + real-device regression before merge/freeze.**
+
+
+## Experimental Branch — Engagement Gimmick v0.4
+
+Stable baseline remains v0.3 on `main`. Branch `engagement-gimmick-v0.4` tests three skill-derived gimmicks without changing core Make-10 semantics:
+- TEN FUSION feedback on successful match waves.
+- CHAIN ×3 activates bounded FEVER 10 for the next 3 locked drops with ×2 score only.
+- LAST DROP gives one 1.4-second player-controlled clutch entry opportunity when the selected top entry is blocked but another column remains open.
+
+No RNG rescue, booster, blocker, wildcard, ad, or permanent meta-system is added. v0.4 must beat v0.3 in real-device feel before any merge decision.
+
+
+### v0.4 Preview Gate
+
+Deep Gimmick QC Pass 2 completed. Smoke Gate #32 PASS on head 408d1f428e3683c80ce997ec7bfeea385f91491e before preview-workflow addition. v0.4 remains experimental and unmerged. An isolated GitHub Actions preview artifact workflow packages the branch after syntax + adversarial tests, without changing the production GitHub Pages source on main.
+
+A/B rule: compare stable v0.3 production against the exact v0.4 artifact build. Evaluate Make-10 satisfaction, intentional pursuit of CHAIN ×3, LAST DROP clutch comprehension, and immediate desire to replay after Game Over. Each gimmick receives KEEP / TUNE / KILL independently; the package is not all-or-nothing.
+
+
+## v0.5 Signature Gameplay — IN DEVELOPMENT
+
+Built from v0.4 synthetic real-browser playtest findings. Scope is deliberately narrow: make the existing identity legible rather than add new power-ups.
+
+Implemented candidate feedback surfaces:
+- TEN FUSION now has a short explicit 10! fusion beat in addition to board pulse.
+- FEVER has persistent remaining-drop HUD and updates on consumption/activation.
+- Existing complementary/near-match cells receive subtle chain-planning emphasis; no automatic move recommendation and no RNG manipulation.
+- Virtual entry piece is visibly rendered above the board, making LAST DROP state spatially understandable.
+- During LAST DROP, actually safe top-row entry columns receive a restrained highlight; player must still move manually.
+- Board top-load escalates warning → critical feedback as stack pressure increases.
+
+Character plan: final Numberling character system begins after v0.5 mechanics/feel contract passes. Character reactions will then bind to idle, fall, near-complement, Fusion, Chain, FEVER, danger, Last Drop/clutch, clear and Game Over states. Do not finalize character art before these state contracts stabilize.
+
+Status: implementation candidate; requires CI/adversarial regression and real-device feel test before any merge/freeze.
+
+
+## v0.6.1 Group-to-10 — Intentional Puzzle Contract — 2026-09-30
+
+Experimental branch: `group-to-10-v0.6`. Draft PR #6 remains unmerged; stable production is unchanged.
+
+Approved core experiment:
+- A TEN is an orthogonally connected group of exactly **2 or 3 Numberlings** whose values total exactly 10.
+- Four-number groups are invalid even when their total is 10.
+- Groups over 10 do not clear and carry no penalty.
+- Diagonal-only connectivity is invalid.
+- A Numberling cannot be consumed by two TEN groups in the same resolution wave.
+- Overlapping candidates are resolved deterministically by maximum non-overlapping cleared-cell coverage with deterministic tie-breaking.
+- One resolved 2- or 3-number group counts as one TEN for objectives/scoring.
+- Gravity and subsequent exact-10 groups continue to create cascade waves.
+- Fair-Bag and truthful NOW + NEXT + NEXT remain unchanged.
+
+Intentionality rule:
+- The game must make the player think; it must not reveal the answer.
+- No partial-sum hint, needed-number/complement hint, recommended-column hint, prospective-gravity hint, or prospective-chain hint.
+- The prior `plannedLandingCells` / `chain-ready` landing-answer cue has been removed.
+- CHAIN remains a skill reward that the player must infer from board geometry and gravity.
+
+Deep QC:
+- Covered L-shape three-number TEN, four-cell T rejection, >10, diagonal rejection, larger connected components with valid 3-cell subsets, overlapping groups, deterministic resolver ties, anti-double-spend, score laundering, 3-number cascade, and dense-board candidate enumeration.
+- Initial dense 6×9 enumeration exposed a performance defect (~256.1 ms in CI); candidate search was refactored to canonical memoized connected-set expansion.
+- Smoke Gate #67: **PASS** for JavaScript syntax, adversarial engine, static entrypoint, and core invariants.
+
+Preview:
+- Isolated `preview-v0.6.1/` snapshot has been published to `main` without modifying stable root gameplay.
+- First deployment check returned 404 while GitHub Pages was propagating; LIVE status must be verified before playtest.
+
+Freeze status: **NOT FROZEN**. Next gate is a comparable gameplay feel test asking whether players intentionally build 3-number TENs and engineer gravity CHAINs without hints.
+
+
+### Core DNA A/B Gate — Instrumentation Upgrade
+
+Direct browser-agent A/B attempts against the live falling-piece UI timed out before producing a complete controlled comparison; incomplete runs are explicitly excluded from evidence.
+
+To avoid subjective screenshot inference, v0.6.1 LAB now exposes read-only session telemetry via `TenDropTelemetry()`: locked drops, 2-number TENs, 3-number TENs, CHAIN ×2+, CHAIN ×3+, and maximum cascade depth. Telemetry does not recommend moves, alter RNG, expose complements, or change gameplay. An adversarial guard prevents the telemetry layer from reintroducing landing/recommended-column hints.
+
+Smoke Gate #75: **PASS** on syntax, adversarial engine, static entrypoint, and core invariants.
+
+Next Core DNA decision must use objective telemetry plus matched deliberate/spam sessions; incomplete browser-agent runs must not be scored as A/B evidence.
+
+
+### Core DNA Deliberate-vs-Spam Diagnostic — Smoke #83
+
+A deterministic matched-seed engine experiment now runs 100 paired sessions (same Fair-Bag seeds; max 180 drops/session). The deliberate policy evaluates legal placements using the current board plus truthful NEXT/NEXT setup potential; the spam control chooses random legal columns without board strategy. This is a capability diagnostic, not a substitute for human play.
+
+Observed:
+- Deliberate: 180.0 avg drops, 44.53 two-number TENs/100 drops, 2.26 three-number TENs/100, 0.06 CHAIN×2+/100, 4684.4 score/100.
+- Spam: 165.7 avg drops, 19.50 two-number TENs/100 drops, 9.88 three-number TENs/100, 2.16 CHAIN×2+/100, 3273.4 score/100.
+- Deliberate clearly improves survival and score, but **three-number TENs and cascades occur more often under chaotic placement** in this diagnostic.
+- Signal: `survival=true`, `ten3Skill=false`, `chainSkill=false`.
+
+Interpretation: v0.6.1 currently demonstrates strategic value in deliberate placement overall, but does **not yet demonstrate that the 3-number rule or CHAIN is itself intentional skill expression**. Three-number TENs may currently function more as incidental board-resolution events than planned constructions. Therefore v0.6.1 remains **NOT FROZEN as Core DNA**.
+
+Do not solve this with auto-hints. The next design experiment should test incentive/board-rule changes that make preserving/building a 3-number TEN strategically worthwhile while retaining player inference. Any such change requires a separate experimental revision and matched diagnostic before human feel validation.
+
+
+### v0.6.2 — Three-TEN Incentive Experiment
+
+Hypothesis: three-number TENs require more setup/board commitment than immediate pairs, so reward them without making them easier or revealing how to build them.
+
+Change:
+- 2-number TEN base score remains 100.
+- 3-number TEN base score = 180 (1.8×).
+- Cascade multiplier remains multiplicative after the group base score.
+- Validity, 2–3 cap, orthogonal connectivity, resolver, Fair-Bag, NOW+NEXT+NEXT and no-hint contract are unchanged.
+- No power-up, rescue, area clear, complement hint, or recommended placement was added.
+
+Smoke Gate #89: **PASS** including adversarial scoring/cascade semantics and matched-seed diagnostic.
+
+Diagnostic after reward (100 paired seeds):
+- Deliberate: avg drops 180.0; TEN-2 44.53/100; TEN-3 2.26/100; CHAIN×2+ 0.06/100; score 4865.3/100.
+- Spam: avg drops 165.7; TEN-2 19.50/100; TEN-3 9.88/100; CHAIN×2+ 2.16/100; score 4119.3/100.
+- Reward increased the economic value of three-number clears but did **not** change their frequency because scoring alone does not alter board physics or player opportunity. Signal remains `survival=true, ten3Skill=false, chainSkill=false`.
+
+Decision: score incentive alone is insufficient to establish three-number TEN as Core DNA skill expression. Keep v0.6.2 experimental / **NOT FROZEN**. Do not escalate the reward blindly; next experiment should change the strategic opportunity/cost structure, not merely points.
+
+
+### v0.6.3 — Number Unlock Progression — Engine Result
+
+Implemented experimental chapter progression:
+- Level 1 pool: 1–5.
+- Level 2: unlock 6.
+- Level 3: unlock 7.
+- Level 4: unlock 8.
+- Level 5: unlock 9.
+- Each level uses a fair shuffled bag containing exactly one copy of every currently unlocked Numberling.
+- Level transition flushes both queue and bag, preventing locked-number leakage across checkpoints.
+- Exact-10, max-three, orthogonal, deterministic overlap and no-hint contracts remain unchanged.
+
+Adversarial coverage verifies exact pools and no locked Numberling can leak through Fair-Bag. Smoke Gate #98: **PASS**.
+
+Matched-seed diagnostic (100 deliberate + 100 spam sessions per level, max 180 drops):
+- L1 1–5: deliberate TEN-3 27.09/100 vs spam 23.98; TEN-3 share 99.11% vs 94.93%.
+- L2 1–6: deliberate TEN-3 28.92 vs spam 25.48; share 83.60% vs 78.05%.
+- L3 1–7: deliberate TEN-3 19.82 vs spam 19.76; effectively parity.
+- L4 1–8: deliberate TEN-3 11.41 vs spam 14.15; advantage reverses.
+- L5 1–9: deliberate TEN-3 2.26 vs spam 9.88; pair optimization dominates deliberate policy.
+
+Interpretation:
+- The unlock idea **successfully creates intentional three-number play in the early game without hints**. This is the first experiment where deliberate TEN-3 exceeds spam at L1/L2.
+- Unlocking complementary high numbers progressively changes the game's decision space naturally: pair play becomes increasingly available as 6→9 enter.
+- L3 is a transition point; by L4/L5, rational immediate-pair play dominates again.
+- Cascades remain more common in chaotic/spam play across this simple heuristic, so CHAIN skill expression is still unresolved and must not be claimed as solved.
+
+Status: **PROMISING / NOT FROZEN**. Preserve v0.6.3 for human feel validation. Do not add further mechanics before checking whether L1–L5 progression feels like discovery rather than artificial restriction.
+
+
+### v0.6.3 — Number Unlock Progression — 2026-09-30
+
+Implemented experimental progression:
+- Level 1: Numberlings 1–5
+- Level 2: unlock 6
+- Level 3: unlock 7
+- Level 4: unlock 8
+- Level 5: unlock 9
+- Fair-Bag is generated only from the active level pool.
+- Level transition flushes queue + bag before the new pool is used, preventing locked-number leakage.
+- Retry preserves the current level/pool; chapter reset returns to 1–5.
+- HUD exposes the current range; no arithmetic/complement/placement hint was added.
+- v0.6.2 scoring experiment remains: pair base 100, three-number TEN base 180.
+
+Adversarial coverage now verifies exact unlock schedule, Fair-Bag pool integrity, and queue/bag flush at level transition.
+
+Smoke Gate #101: **PASS** — syntax, adversarial gameplay, Core DNA simulation, static entrypoint, and gameplay invariants.
+
+Matched-seed diagnostic by unlock stage (100 deliberate + 100 spam sessions per stage):
+- 1–5: deliberate TEN-3 27.09/100 drops vs spam 23.98; TEN-3 share 99.11% vs 94.93%. First positive three-number skill signal.
+- 1–6: deliberate TEN-3 28.92 vs spam 25.48; TEN-3 share 83.60% vs 78.05%. Positive three-number skill signal remains.
+- 1–7: deliberate TEN-3 19.82 vs spam 19.76; essentially neutral.
+- 1–8: deliberate TEN-3 11.41 vs spam 14.15; signal reverses.
+- 1–9: deliberate TEN-3 2.26 vs spam 9.88; pair strategy dominates deliberate play.
+
+Important: CHAIN remains much more frequent in spam across all stages, so Number Unlock Progression improves intentional three-number construction early but does **not** solve intentional cascade skill.
+
+Interpretation: staged unlock is the strongest experiment so far for teaching three-number TEN without hints. It naturally creates an early 3-number phase and gradually introduces fast pair shortcuts. However, the current five-level cadence reaches the full 1–9 pool too quickly if the product goal is long-form mastery/retention. v0.6.3 remains **NOT FROZEN** pending progression pacing and human-feel validation.
+
+
+### v0.6.3 — Number Unlock Progression Diagnostic
+
+Implemented progression:
+- Level 1: Numberlings 1–5.
+- Level 2: unlock 6.
+- Level 3: unlock 7.
+- Level 4: unlock 8.
+- Level 5: unlock 9.
+- Fair-Bag is generated only from the currently unlocked pool.
+- Queue and bag are flushed at level transition so locked numbers cannot leak from a previous pool.
+- No hint, complement recommendation, rescue, or altered TEN validity was added.
+
+Smoke Gate #101: **PASS** across syntax, adversarial gameplay, deliberate-vs-spam simulation, static entrypoint, and invariants.
+
+Matched 100-seed diagnostic by unlock stage:
+- L1 1–5: deliberate TEN-3 27.09/100 vs spam 23.98; deliberate TEN-3 share 99.11%.
+- L2 1–6: deliberate TEN-3 28.92/100 vs spam 25.48; deliberate TEN-3 share 83.60%.
+- L3 1–7: deliberate TEN-3 19.82/100 vs spam 19.76; deliberate TEN-3 share 50.31%.
+- L4 1–8: deliberate TEN-3 11.41/100 vs spam 14.15; deliberate TEN-3 share 26.92%.
+- L5 1–9: deliberate TEN-3 2.26/100 vs spam 9.88; deliberate TEN-3 share 4.83%.
+
+Interpretation:
+- Unlock progression successfully creates an organic learning arc: early game strongly teaches three-number TEN construction, middle game transitions toward mixed 2/3-number strategy, and late game introduces increasingly efficient complementary pairs.
+- This is the first experiment where deliberate play beats spam on three-number TEN frequency in the intended early teaching stages without auto-hints.
+- The remaining weakness is CHAIN intentionality: deliberate CHAIN×2+ remains near zero while spam generates incidental cascades. Do not disturb the successful unlock progression while solving this separately.
+- v0.6.3 Number Unlock Progression is **PROMISING / PROVISIONALLY KEEP**, but overall Core DNA remains **NOT FROZEN** until chain skill and human feel are validated.
+
+
+### v0.6.3 Number Unlock Progression — Engine Gate
+
+Implemented progression:
+- Level 1: Numberlings 1–5
+- Level 2: unlock 6
+- Level 3: unlock 7
+- Level 4: unlock 8
+- Level 5: unlock 9
+- Fair-Bag is generated only from the active pool.
+- Level transition flushes queue + bag so locked/unlocked values cannot leak across the boundary.
+- No auto-hint or complement guidance added.
+- UI exposes the current numeric pool in the level label.
+
+Adversarial coverage verifies exact unlock schedule, Fair-Bag containment, and transition queue/bag flushing. Smoke Gate #101: **PASS**.
+
+Matched 100-seed diagnostic by stage:
+- 1–5: deliberate TEN-3 27.09/100 vs spam 23.98; TEN-3 share 99.11% vs 94.93%. First stage where three-number TEN is skill-positive.
+- 1–6: deliberate TEN-3 28.92 vs spam 25.48; still skill-positive.
+- 1–7: 19.82 vs 19.76; effectively neutral.
+- 1–8: 11.41 vs 14.15; becomes spam-positive.
+- 1–9: 2.26 vs 9.88; strongly spam-positive as deliberate policy rationally prefers easy pairs.
+
+Design conclusion: progressive Numberling unlock is materially stronger than score reward alone. It teaches/builds three-number TEN organically in early play without hints. However, the full 1–9 pool still collapses deliberate play toward pairs and cascades remain disproportionately chaotic. v0.6.3 is therefore **PROMISING / NOT FROZEN**.
+
+Next gate: optimize checkpoint pacing and late-pool strategic structure. Preserve 1–5 and 1–6 as strong onboarding candidates; treat 7 as transition; do not assume 8/9 should unlock as quickly as one level each.
+
+
+### v0.6.4 — Intentional Gravity Chain Diagnostic
+
+Smoke Gate #106: **PASS**.
+
+A multi-drop latent-gravity evaluator was added to the diagnostic harness only. It does not change runtime physics and exposes no player hint. It values board states where complementary Numberlings can be brought together after supporting cells are later removed.
+
+Matched 100-seed results, CHAIN×2+ per 100 drops:
+- L1 1–5: setup-aware 0.00 vs spam 1.03.
+- L2 1–6: 0.80 vs 2.33.
+- L3 1–7: 2.70 vs 3.01.
+- L4 1–8: **6.12 vs 2.68** (~2.3× spam).
+- L5 1–9: **7.58 vs 2.16** (~3.5× spam).
+- Setup-aware max chain reached ×6 at L5.
+
+Interpretation:
+- Current gravity physics already supports intentional cascade mastery; no physics modification is justified.
+- Early progression naturally teaches TEN construction. Once 8–9 expand the pool, latent gravity planning becomes a strong skill discriminator.
+- Previous near-zero deliberate CHAIN result was caused by a one-step/myopic decision policy, not absence of strategic opportunity in the engine.
+- Preserve the v0.6.3 unlock progression and existing gravity semantics.
+- **PROVISIONAL CORE DNA:** early TEN-3 learning → mixed midgame → late pair efficiency + multi-drop gravity CHAIN mastery.
+- Overall status remains **NOT FROZEN** pending human discoverability/feel validation. Do not add auto-hints to force discovery.
+
+
+### Human Discoverability Instrumentation Gate
+
+Smoke Gate #109: **PASS / GREEN** at commit `b4a0d6c`.
+
+Passive runtime telemetry now records:
+- drop index of the first CHAIN×2+ discovery;
+- subsequent CHAIN count after the first discovery;
+- CHAIN event level and depth;
+- existing TEN-2/TEN-3, CHAIN×2/×3 and max-chain metrics;
+- explicit telemetry reset for clean playtest sessions.
+
+Guardrails:
+- no CHAIN hint;
+- no recommended move/column/path;
+- no physics change;
+- no unlock-progression change;
+- no additional rescue mechanic.
+
+Engineering status: **CLOSED / GREEN**.
+Next gate is behavioral human playtesting: determine whether players discover gravity CHAIN unaided and whether CHAIN frequency rises after first discovery. Core DNA remains **NOT FROZEN** until this human-discoverability evidence exists.
+
+
+## v0.6.5 — Human Telemetry Freeze Gate — 2026-10-01
+
+Branch: `group-to-10-v0.6`; draft PR #6 remains unmerged.
+
+Validation infrastructure is now closed/GREEN:
+- `docs/CORE-DNA-HUMAN-TELEMETRY-GATE.md` preregisters the behavioral decision contract.
+- `tests/human-telemetry-classifier.js` classifies valid sessions as NO_DISCOVERY, INCIDENTAL, EMERGING_DISCOVERY, DELIBERATE_SIGNAL, or STRONG_DELIBERATE_SIGNAL.
+- Adversarial tests fail closed on short/incomplete sessions, automation, mutated sessions, duplicate same-drop CHAIN events, and inconsistent repeat accounting.
+- The classifier is enforced by TEN DROP Smoke Gate CI.
+- Smoke Gate #114: **PASS / GREEN** on head `6a663ff20f9572217aa0a495b2f98150f4b25c7b`.
+
+Freeze evidence is deliberately not synthesized. Minimum directional human cohort remains:
+- >=5 valid independent human sessions;
+- >=3 DELIBERATE_SIGNAL or stronger;
+- no evidence that random/spam behavior matches or exceeds the post-discovery repeat pattern;
+- base exact-10 comprehension remains intact.
+
+Current decision: **PROVISIONAL CORE DNA — NOT FROZEN**. Do not alter gravity/rules or add answer hints while collecting this cohort. Character System v0.7 begins only after the Core DNA freeze decision.

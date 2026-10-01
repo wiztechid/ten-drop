@@ -20,6 +20,13 @@ jobs:
           node --check js/core.js
           node --check tests/adversarial-gameplay.test.js
           node tests/adversarial-gameplay.test.js
+      - name: Core DNA deliberate vs spam simulation
+        run: node tests/core-dna-ab-sim.js
+      - name: Human telemetry decision gate
+        run: |
+          node --check tests/human-telemetry-classifier.js
+          node --check tests/human-telemetry-classifier.test.js
+          node tests/human-telemetry-classifier.test.js
       - name: Static entrypoint
         run: |
           test -s index.html
@@ -32,7 +39,9 @@ jobs:
       - name: Core gameplay invariants
         run: |
           grep -q 'COLS=6,ROWS=9' js/game.js
-          grep -q 'n+board\[rr\]\[cc\]===10' js/core.js
+          grep -q 'function tenCandidates' js/core.js
+          grep -q 'function selectTenGroups' js/core.js
+          grep -q 'length>=3' js/core.js
           grep -q 'while(queue.length<3)' js/game.js
           grep -q 'TenDropCore' js/game.js
           grep -q 'levelClearPending' js/game.js
