@@ -12,7 +12,8 @@ function validate(t){
  if(t.chains3>t.chains2)return false;
  if(!t.chainEvents.every(e=>e&&Number.isInteger(e.drop)&&e.drop>0&&e.drop<=t.drops&&Number.isInteger(e.level)&&e.level>=1&&e.level<=5&&Number.isInteger(e.depth)&&e.depth>=2))return false;
  const events=[...t.chainEvents].sort((a,b)=>a.drop-b.drop);
- if(events.length===0)return t.firstChainDrop===null&&t.chains2===0&&t.chains3===0&&t.maxChain===0&&t.chainsAfterFirst===0;
+ if(events.length===0)return t.firstChainDrop===null&&t.chains2===0&&t.chains3===0&&t.maxChain<=1&&t.chainsAfterFirst===0;
+ if(new Set(events.map(e=>e.drop)).size!==events.length)return false;
  if(t.firstChainDrop!==events[0].drop)return false;
  if(events.some(e=>t.dropsByLevel[e.level-1]===0))return false;
  if(t.chains2!==events.length||t.chains3!==events.filter(e=>e.depth>=3).length||t.maxChain!==Math.max(...events.map(e=>e.depth)))return false;
