@@ -8,7 +8,14 @@ function validate(t){
  for(const k of ["drops","tens2","tens3","chains2","chains3","maxChain","chainsAfterFirst"])if(!finiteInt(t[k]))return false;
  if(t.firstChainDrop!==null&&!finiteInt(t.firstChainDrop))return false;
  if(!Array.isArray(t.chainEvents))return false;
- return t.chainEvents.every(e=>e&&finiteInt(e.drop)&&finiteInt(e.level)&&Number.isInteger(e.depth)&&e.depth>=2);
+ if(t.chains3>t.chains2)return false;
+ if(!t.chainEvents.every(e=>e&&Number.isInteger(e.drop)&&e.drop>0&&e.drop<=t.drops&&Number.isInteger(e.level)&&e.level>=1&&e.level<=5&&Number.isInteger(e.depth)&&e.depth>=2))return false;
+ const events=[...t.chainEvents].sort((a,b)=>a.drop-b.drop);
+ if(events.length===0)return t.firstChainDrop===null&&t.chains2===0&&t.chains3===0&&t.maxChain===0&&t.chainsAfterFirst===0;
+ if(t.firstChainDrop!==events[0].drop)return false;
+ if(t.chains2!==events.length||t.chains3!==events.filter(e=>e.depth>=3).length||t.maxChain!==Math.max(...events.map(e=>e.depth)))return false;
+ if(t.chainsAfterFirst!==events.length-1)return false;
+ return true;
 }
 function classify(t,{gameOver=false,automated=false,mutated=false}={}){
  if(!validate(t)||automated||mutated)return {class:CLASS.INCOMPLETE,valid:false};
