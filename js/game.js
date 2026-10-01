@@ -10,7 +10,7 @@ const levels=[
  {type:"chain",target:2,label:"Make CHAIN ×2"},
  {type:"tens",target:10,label:"Make 10 Tens"}
 ];
-let telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[],sessionRestarts:0};
+let telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[],sessionRestarts:0,dropsByLevel:[0,0,0,0,0]};
 let board,active,queue=[],score=0,best=+localStorage.getItem("tenDropBest")||0,level=0,progress=0,levelScoreStart=0,timer=null,fallMs=850,locked=false,bag=[],levelClearPending=false,levelTimer=null,runToken=0,feverDrops=0,lastDropArmed=false,lastDropUsed=false,lastDropTimer=null,gameOverShown=false;
 const $=s=>document.querySelector(s),boardEl=$("#board"),scoreEl=$("#score"),bestEl=$("#best"),callout=$("#callout");
 function makeBoard(){return Array.from({length:ROWS},()=>Array(COLS).fill(EMPTY))}
@@ -23,7 +23,7 @@ function can(r,c){return r>=0&&r<ROWS&&c>=0&&c<COLS&&!board[r][c]}
 function step(){if(locked)return;if(can(active.r+1,active.c)){active.r++;render();schedule()}else if(active.r<0){triggerLastDrop()}else lock()}
 function move(dx){if(locked||!active)return;let nc=active.c+dx;if(nc<0||nc>=COLS)return;if(active.r<0||can(active.r,nc)){active.c=nc;render();if(lastDropArmed&&active.r<0&&can(0,active.c)){clearTimeout(lastDropTimer);lastDropTimer=null;active.r=0;lastDropArmed=false;clearStagePulse();show("CLUTCH SAVE!");stagePulse("fusion");render();schedule()}}}
 function hardDrop(){if(locked||!active)return;while(can(active.r+1,active.c))active.r++;if(active.r<0)return triggerLastDrop();lock()}
-async function lock(){telemetry.drops++;clearTimeout(timer);clearTimeout(lastDropTimer);lastDropTimer=null;locked=true;const token=runToken;const feverActive=feverDrops>0;if(feverActive)feverDrops--;updateFeverHud();board[active.r][active.c]=active.n;active=null;render();await resolve(token,feverActive);if(token!==runToken)return;locked=false;if(level<levels.length&&!levelClearPending)spawn()}
+async function lock(){telemetry.drops++;telemetry.dropsByLevel[level]=(telemetry.dropsByLevel[level]||0)+1;clearTimeout(timer);clearTimeout(lastDropTimer);lastDropTimer=null;locked=true;const token=runToken;const feverActive=feverDrops>0;if(feverActive)feverDrops--;updateFeverHud();board[active.r][active.c]=active.n;active=null;render();await resolve(token,feverActive);if(token!==runToken)return;locked=false;if(level<levels.length&&!levelClearPending)spawn()}
 function matchWave(){return Core.matchWave(board)}
 function gravity(){Core.gravity(board)}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -52,7 +52,7 @@ $("#left").onclick=()=>move(-1);$("#right").onclick=()=>move(1);$("#drop").oncli
 document.addEventListener("keydown",e=>{if(e.key==="ArrowLeft")move(-1);if(e.key==="ArrowRight")move(1);if(e.key==="ArrowDown"||e.key===" ")hardDrop()});
 let sx=0,sy=0;boardEl.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});boardEl.addEventListener("touchend",e=>{let dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;if(Math.abs(dx)>35&&Math.abs(dx)>Math.abs(dy))move(dx>0?1:-1);else if(dy>45)hardDrop()},{passive:true});
 window.TenDropTelemetry=()=>JSON.parse(JSON.stringify(telemetry));
-window.TenDropTelemetryReset=()=>{telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[],sessionRestarts:0};return window.TenDropTelemetry()};
+window.TenDropTelemetryReset=()=>{telemetry={drops:0,tens2:0,tens3:0,chains2:0,chains3:0,maxChain:0,firstChainDrop:null,chainsAfterFirst:0,chainEvents:[],sessionRestarts:0,dropsByLevel:[0,0,0,0,0]};return window.TenDropTelemetry()};
 function initTelemetryLab(){
  const lab=$("#telemetryLab");if(!lab||!new URLSearchParams(location.search).has("telemetry"))return;
  lab.classList.remove("hidden");const status=$("#telemetryStatus");
