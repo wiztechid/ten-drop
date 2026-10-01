@@ -5,6 +5,7 @@ const base={drops:100,tens2:10,tens3:8,chains2:0,chains3:0,maxChain:0,firstChain
 assert.equal(classify({...base,drops:59,dropsByLevel:[20,10,10,10,9]}).class,CLASS.INCOMPLETE);
 assert.equal(classify({...base,drops:35,dropsByLevel:[15,10,10,0,0]},{gameOver:true}).class,CLASS.NO_DISCOVERY);
 assert.equal(classify(base).class,CLASS.NO_DISCOVERY);
+assert.equal(classify({...base,maxChain:1}).class,CLASS.NO_DISCOVERY);
 let incidental={...base,chains2:1,maxChain:2,firstChainDrop:40,chainEvents:[{drop:40,level:3,depth:2}]};
 assert.equal(classify(incidental).class,CLASS.INCIDENTAL);
 let emerging={...incidental,chains2:2,chainsAfterFirst:1,chainEvents:[...incidental.chainEvents,{drop:70,level:4,depth:2}]};
@@ -14,7 +15,7 @@ assert.ok([CLASS.DELIBERATE,CLASS.STRONG].includes(classify(deliberate).class));
 let strong={...incidental,drops:120,dropsByLevel:[30,20,20,25,25],chains2:4,chains3:1,maxChain:3,chainsAfterFirst:3,chainEvents:[...incidental.chainEvents,{drop:70,level:4,depth:2},{drop:90,level:5,depth:3},{drop:110,level:5,depth:2}]};
 assert.equal(classify(strong).class,CLASS.STRONG);
 // Duplicate same-drop events must fail closed to emerging rather than manufacture mastery.
-let dup={...strong,chainsAfterFirst:3,chainEvents:[incidental.chainEvents[0],{drop:70,level:4,depth:2},{drop:70,level:4,depth:3},{drop:90,level:5,depth:3}]};
+let dup={...strong,chains3:2,chainsAfterFirst:3,chainEvents:[incidental.chainEvents[0],{drop:70,level:4,depth:2},{drop:70,level:4,depth:3},{drop:90,level:5,depth:3}]};
 assert.equal(classify(dup).class,CLASS.INCOMPLETE);
 assert.equal(classify(strong,{automated:true}).class,CLASS.INCOMPLETE);
 assert.equal(classify({...strong,sessionRestarts:1}).class,CLASS.INCOMPLETE);
